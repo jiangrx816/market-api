@@ -1,7 +1,7 @@
 # 系统基础配置
 system:
   env: public
-  port: 8089
+  port: 8081
   db-type: mysql
   use-redis: true
   use-http-cache: true
@@ -21,7 +21,7 @@ mysql:
   path: 127.0.0.1
   port: 3306
   config: "charset=utf8mb4&parseTime=True&loc=Local"
-  db-name: web
+  db-name: market
   username: root
   password: 123456
   max-idle-conns: 10
@@ -39,7 +39,7 @@ cache:
 zap:
   level: info
   format: console
-  prefix: "[wechat]"
+  prefix: "[market]"
   director: log
   show-line: true
   encode-level: LowercaseColorLevelEncoder
