@@ -1,16 +1,16 @@
-module wechat
+module market
 
 go 1.19
 
 require (
-	github.com/chenyahui/gin-cache v1.8.1
+	github.com/chenyahui/gin-cache v1.9.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/jinzhu/gorm v1.9.16
 	github.com/robfig/cron v1.2.0
-	go.uber.org/zap v1.25.0
-	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4
+	go.uber.org/zap v1.26.0
+	golang.org/x/sync v0.5.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
