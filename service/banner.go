@@ -1,7 +1,7 @@
 package service
 
-import "market/api/model"
-import "market/api/global"
+import "market/model"
+import "market/global"
 
 type BannerService struct {
 }

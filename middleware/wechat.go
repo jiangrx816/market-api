@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"wechat/common"
+	"market/common"
 )
 
 //CheckWechatMiddleware 验证是否为微信小程序访问

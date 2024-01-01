@@ -5,8 +5,8 @@ import (
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
 	"log"
-	"wechat/config"
-	"wechat/global"
+	"market/config"
+	"market/global"
 )
 
 var ViperConfig config.Server

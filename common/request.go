@@ -2,7 +2,7 @@ package common
 
 import (
 	"github.com/gin-gonic/gin"
-	"wechat/global"
+	"market/global"
 	"strings"
 )
 

@@ -2,7 +2,9 @@ package app
 
 import (
 	"github.com/gin-gonic/gin"
-	"market/api/service"
+	"market/common"
+	"market/global"
+	"market/service"
 )
 
 //ApiGetBannerList 获取Banner列表

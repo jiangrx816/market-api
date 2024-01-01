@@ -2,8 +2,8 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"market/api/app"
-	"market/api/global"
+	"market/app"
+	"market/global"
 )
 
 func InitRouter() *gin.Engine {

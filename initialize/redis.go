@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/go-redis/redis/v8"
 	"log"
-	"wechat/global"
+	"market/global"
 	"time"
 )
 

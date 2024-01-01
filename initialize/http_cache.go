@@ -3,7 +3,7 @@ package initialize
 import (
 	"github.com/chenyahui/gin-cache/persist"
 	"log"
-	"wechat/global"
+	"market/global"
 )
 
 func HttpCache() {

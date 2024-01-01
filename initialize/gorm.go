@@ -3,7 +3,7 @@ package initialize
 import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
-	"wechat/global"
+	"market/global"
 )
 
 // Gorm 初始化数据库并产生数据库全局变量
