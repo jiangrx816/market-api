@@ -1,0 +1,47 @@
+# 系统基础配置
+system:
+  env: public
+  port: 8089
+  db-type: mysql
+  use-redis: true
+  use-http-cache: true
+wechat:
+  appid: "xxxxxxxxx"
+  secret: "xxxxxxx"
+  school_appid: "xxxxxxxxx"
+  school_secret: "xxxxxxxxx"
+# Redis配置信息
+redis:
+  db: 0
+  addr: 127.0.0.1
+  port: 6379
+  password: ""
+# mysql配置信息
+mysql:
+  path: 127.0.0.1
+  port: 3306
+  config: "charset=utf8mb4&parseTime=True&loc=Local"
+  db-name: web
+  username: root
+  password: 123456
+  max-idle-conns: 10
+  max-open-conns: 100
+  log-mode: ""
+  log-zap: false
+#路由缓存时长(小时)
+cache:
+  time-min: 1
+  time-short: 1
+  time-middle: 1
+  time-long: 1
+  time-max: 1
+# 日志信息配置
+zap:
+  level: info
+  format: console
+  prefix: "[wechat]"
+  director: log
+  show-line: true
+  encode-level: LowercaseColorLevelEncoder
+  stacktrace-key: stacktrace
+  log-in-console: true
