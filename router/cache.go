@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"time"
-	"wechat/cache"
-	"wechat/global"
+	"market/cache"
+	"market/global"
 )
 
 func routerCache(sec int64) (res gin.HandlerFunc) {
