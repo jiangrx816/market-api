@@ -45,8 +45,8 @@ func (ins *IndexService) ApiGetPayList() (payListData []response.FormatData) {
 	return payListData
 }
 
-//ApiGetMemberList 获取优选工匠列表
-func (ins *IndexService) ApiGetMemberList(page, tType int) (memberLists []response.MemberData) {
+//ApiGetGoodMemberList 获取优选工匠列表
+func (ins *IndexService) ApiGetGoodMemberList(page, tType int) (memberLists []response.MemberData) {
 
 	tagDataList := ins.GetTagList()
 	size := global.DEFAULT_PAGE_SIZE
@@ -100,9 +100,43 @@ func (ins *IndexService) ApiGetMemberList(page, tType int) (memberLists []respon
 	return
 }
 
+//ApiGetMemberInfo 获取会员详情
+func (ins *IndexService) ApiGetMemberInfo(userId int) (userInfo response.MemberData) {
+	var user model.ZMUser
+	odb := global.GVA_DB.Model(&model.ZMUser{}).Debug()
+	odb.Where("user_id=?", userId).First(&user)
+
+	var userExt model.ZMUserExt
+	odbExt := global.GVA_DB.Model(&model.ZMUserExt{}).Debug()
+	odbExt.Where("user_id=?", userId).First(&userExt)
+
+	tagInfo := ins.GetTagInfo(user.TagId)
+	userInfo.Id = user.Id
+	userInfo.UserId = user.UserId
+	userInfo.OpenId = user.OpenId
+	userInfo.NickName = user.NickName
+	userInfo.RealName = user.RealName
+	userInfo.HeadUrl = user.HeadUrl
+	userInfo.Mobile = user.Mobile
+	userInfo.TagId = user.TagId
+	userInfo.TagName = tagInfo.Name
+	userInfo.Desc = userExt.Desc
+	userInfo.Demo = userExt.Demo
+	userInfo.ViewCount = userExt.ViewCount
+
+	return
+}
+
 //GetTagList 获取所有的工种
 func (ins *IndexService) GetTagList() (tagList []model.ZMTags) {
 	odb := global.GVA_DB.Model(&model.ZMTags{}).Debug()
 	odb.Find(&tagList)
 	return tagList
+}
+
+//GetTagInfo 获取指定的工种
+func (ins *IndexService) GetTagInfo(tagId int) (tagInfo model.ZMTags) {
+	odb := global.GVA_DB.Model(&model.ZMTags{}).Debug()
+	odb.Where("id=?", tagId).First(&tagInfo)
+	return
 }

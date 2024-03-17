@@ -38,14 +38,24 @@ func ApiGetPayList(c *gin.Context) {
 	}, global.SUCCESS_MSG, c)
 }
 
-//ApiGetMemberList 获取优选工匠列表
-func ApiGetMemberList(c *gin.Context) {
+//ApiGetGoodMemberList 获取优选工匠列表
+func ApiGetGoodMemberList(c *gin.Context) {
 	page := utils.GetIntParamItem("page", 10, c)
 	tType := utils.GetIntParamItem("type", 0, c)
 	var service service.IndexService
-	list := service.ApiGetMemberList(page, tType)
+	list := service.ApiGetGoodMemberList(page, tType)
 	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
 		"list": list,
+	}, global.SUCCESS_MSG, c)
+}
+
+//ApiGetMemberInfo 获取会员详情
+func ApiGetMemberInfo(c *gin.Context) {
+	userId := utils.GetIntParamItem("user_id", 0, c)
+	var service service.IndexService
+	info := service.ApiGetMemberInfo(userId)
+	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
+		"info": info,
 	}, global.SUCCESS_MSG, c)
 }
 

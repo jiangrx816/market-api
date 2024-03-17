@@ -21,8 +21,10 @@ func InitRouter() *gin.Engine {
 		api.GET("/getTagList", routerCache(global.RedisURL_CACHE), app.ApiGetTagList)
 		//获取会员价格列表
 		api.GET("/getPayList", app.ApiGetPayList)
-		//获取会员价格列表
-		api.GET("/getMemberList", app.ApiGetMemberList)
+		//获取优选工匠列表
+		api.GET("/getMemberList", app.ApiGetGoodMemberList)
+		//获取会员详情
+		api.GET("/getMemberInfo", app.ApiGetMemberInfo)
 	}
 
 	return router

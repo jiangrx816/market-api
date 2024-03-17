@@ -23,4 +23,5 @@ type MemberData struct {
 	IsMember    int    `json:"is_member"`
 	MemberLimit int    `json:"member_limit"`
 	ViewCount   int    `json:"view_count"`
+	Demo        string `json:"demo"`
 }
