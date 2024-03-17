@@ -1,6 +1,9 @@
 package service
 
-import "market/model"
+import (
+	"market/model"
+	"strconv"
+)
 import "market/global"
 
 type IndexService struct {
@@ -22,10 +25,28 @@ func (ins *IndexService) ApiGetTagList() (tagList []model.ZMTags) {
 	return tagList
 }
 
+type FormatData struct {
+	Value   string `json:"value"`
+	Name    string `json:"name"`
+	Checked bool   `json:"checked"`
+}
+
 //ApiGetPayList 获取会员价格的列表信息
-func (ins *IndexService) ApiGetPayList() (payList []model.ZMPay) {
+func (ins *IndexService) ApiGetPayList() (payListData []FormatData) {
+	var payList []model.ZMPay
 	odb := global.GVA_DB.Model(&model.ZMPay{}).Debug()
 	odb = odb.Where("type=1").Order("id asc").Limit(3)
 	odb.Find(&payList)
-	return payList
+
+	var temp FormatData
+	for idx, _ := range payList {
+		temp.Checked = false
+		if payList[idx].Id == 1 {
+			temp.Checked = true
+		}
+		temp.Value = strconv.Itoa(payList[idx].Id)
+		temp.Name = payList[idx].Name + "（￥" + payList[idx].CPrice + "）"
+		payListData = append(payListData, temp)
+	}
+	return payListData
 }
