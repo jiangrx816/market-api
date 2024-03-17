@@ -72,6 +72,7 @@ func (ins *IndexService) ApiGetGoodMemberList(page, tType int) (memberLists []re
 	var temp response.MemberData
 	for idx, _ := range memberList {
 		temp.Desc = ""
+		temp.ViewCount = 1
 		temp.Id = memberList[idx].Id
 		temp.UserId = memberList[idx].UserId
 		temp.OpenId = memberList[idx].OpenId
