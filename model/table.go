@@ -40,6 +40,7 @@ type ZMPay struct {
 	OPrice    string `json:"o_price"`
 	Number    int    `json:"number"`
 	NumberExt int    `json:"number_ext"`
+	Checked   bool   `json:"checked"`
 	Type      int    `json:"-"`
 }
 

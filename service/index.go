@@ -37,15 +37,12 @@ type FormatData struct {
 func (ins *IndexService) ApiGetPayList() (payListData []FormatData) {
 	var payList []model.ZMPay
 	odb := global.GVA_DB.Model(&model.ZMPay{}).Debug()
-	odb = odb.Where("type=1").Order("id asc").Limit(3)
+	odb = odb.Where("type=1 and status=1").Order("sort desc").Limit(6)
 	odb.Find(&payList)
 
 	var temp FormatData
 	for idx, _ := range payList {
-		temp.Checked = false
-		if payList[idx].Id == 1 {
-			temp.Checked = true
-		}
+		temp.Checked = payList[idx].Checked
 		temp.Number = payList[idx].Number
 		temp.NumberExt = payList[idx].NumberExt
 		temp.Value = strconv.Itoa(payList[idx].Id)
