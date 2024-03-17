@@ -34,13 +34,13 @@ func (ZMOrder) TableName() string {
 
 // ZMPay
 type ZMPay struct {
-	Id        int    `json:"-"`
+	Id        int    `json:"id"`
 	Name      string `json:"name"`
 	CPrice    string `json:"c_price"`
 	OPrice    string `json:"o_price"`
 	Number    int    `json:"number"`
 	NumberExt int    `json:"number_ext"`
-	Type      int    `json:"type"`
+	Type      int    `json:"-"`
 }
 
 // TableName ZMPay 表名
@@ -50,10 +50,10 @@ func (ZMPay) TableName() string {
 
 // ZMTags
 type ZMTags struct {
-	Id     int    `json:"-"`
+	Id     int    `json:"id"`
 	Name   string `json:"name"`
 	Icon   string `json:"icon"`
-	Status int    `json:"status"`
+	Status int    `json:"-"`
 }
 
 // TableName ZMTags 表名
