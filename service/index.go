@@ -110,6 +110,7 @@ func (ins *IndexService) ApiGetMemberInfo(userId int) (userInfo response.MemberD
 	odbExt := global.GVA_DB.Model(&model.ZMUserExt{}).Debug()
 	odbExt.Where("user_id=?", userId).First(&userExt)
 
+	global.GVA_DB.Model(&model.ZMUserExt{}).Debug().Where("user_id=?", userId).Update("view_count", userExt.ViewCount+1)
 	tagInfo := ins.GetTagInfo(user.TagId)
 	userInfo.Id = user.Id
 	userInfo.UserId = user.UserId
