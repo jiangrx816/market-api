@@ -81,7 +81,7 @@ func (ZMTask) TableName() string {
 // ZMUser
 type ZMUser struct {
 	Id          int    `json:"-"`
-	UserId      string `json:"user_id"`
+	UserId      int    `json:"user_id"`
 	OpenId      string `json:"open_id"`
 	NickName    string `json:"nick_name"`
 	RealName    string `json:"real_name"`
@@ -102,7 +102,7 @@ func (ZMUser) TableName() string {
 // ZMUserExt
 type ZMUserExt struct {
 	Id      int    `json:"-"`
-	UserId  string `json:"user_id"`
+	UserId  int    `json:"user_id"`
 	TagId   int    `json:"tag_id"`
 	Address string `json:"address"`
 	Desc    string `json:"desc"`

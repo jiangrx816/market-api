@@ -6,6 +6,7 @@ import (
 	"market/common"
 	"market/global"
 	"market/service"
+	"market/utils"
 	"path"
 	"strings"
 )
@@ -32,6 +33,17 @@ func ApiGetTagList(c *gin.Context) {
 func ApiGetPayList(c *gin.Context) {
 	var service service.IndexService
 	list := service.ApiGetPayList()
+	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
+		"list": list,
+	}, global.SUCCESS_MSG, c)
+}
+
+//ApiGetMemberList 获取优选工匠列表
+func ApiGetMemberList(c *gin.Context) {
+	page := utils.GetIntParamItem("page", 10, c)
+	tType := utils.GetIntParamItem("type", 0, c)
+	var service service.IndexService
+	list := service.ApiGetMemberList(page, tType)
 	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
 		"list": list,
 	}, global.SUCCESS_MSG, c)

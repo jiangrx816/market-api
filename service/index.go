@@ -1,6 +1,7 @@
 package service
 
 import (
+	"market/common/response"
 	"market/model"
 	"strconv"
 )
@@ -25,22 +26,14 @@ func (ins *IndexService) ApiGetTagList() (tagList []model.ZMTags) {
 	return tagList
 }
 
-type FormatData struct {
-	Value     string `json:"value"`
-	Name      string `json:"name"`
-	Checked   bool   `json:"checked"`
-	Number    int    `json:"number"`
-	NumberExt int    `json:"number_ext"`
-}
-
 //ApiGetPayList 获取会员价格的列表信息
-func (ins *IndexService) ApiGetPayList() (payListData []FormatData) {
+func (ins *IndexService) ApiGetPayList() (payListData []response.FormatData) {
 	var payList []model.ZMPay
 	odb := global.GVA_DB.Model(&model.ZMPay{}).Debug()
 	odb = odb.Where("type=1 and status=1").Order("sort desc").Limit(6)
 	odb.Find(&payList)
 
-	var temp FormatData
+	var temp response.FormatData
 	for idx, _ := range payList {
 		temp.Checked = payList[idx].Checked
 		temp.Number = payList[idx].Number
@@ -50,4 +43,65 @@ func (ins *IndexService) ApiGetPayList() (payListData []FormatData) {
 		payListData = append(payListData, temp)
 	}
 	return payListData
+}
+
+//ApiGetMemberList 获取优选工匠列表
+func (ins *IndexService) ApiGetMemberList(page, tType int) (memberLists []response.MemberData) {
+
+	tagDataList := ins.GetTagList()
+	size := global.DEFAULT_PAGE_SIZE
+	offset := size * (page - 1)
+	var memberList []model.ZMUser
+	odb := global.GVA_DB.Model(&model.ZMUser{}).Debug()
+	odb = odb.Where("status= 1 and is_best = 1")
+	if tType > 0 {
+		odb = odb.Where(" tag_id = ?", tType)
+	}
+	odb = odb.Order("id desc").Limit(size).Offset(offset)
+	odb.Find(&memberList)
+
+	//组合userId的集合
+	var userIds []int
+	for idx, _ := range memberList {
+		userIds = append(userIds, memberList[idx].UserId)
+	}
+	var memberExtList []model.ZMUserExt
+	odbExt := global.GVA_DB.Model(&model.ZMUserExt{}).Debug()
+	odb = odbExt.Where("user_id in(?)", userIds).Find(&memberExtList)
+
+	var temp response.MemberData
+	for idx, _ := range memberList {
+		temp.Desc = ""
+		temp.Id = memberList[idx].Id
+		temp.UserId = memberList[idx].UserId
+		temp.OpenId = memberList[idx].OpenId
+		temp.NickName = memberList[idx].NickName
+		temp.RealName = memberList[idx].RealName
+		temp.HeadUrl = memberList[idx].HeadUrl
+		temp.Mobile = memberList[idx].Mobile
+		temp.TagId = memberList[idx].TagId
+		for dIndex, _ := range tagDataList {
+			if memberList[idx].TagId == tagDataList[dIndex].Id {
+				temp.TagName = tagDataList[dIndex].Name
+			}
+		}
+		for dIndex, _ := range memberExtList {
+			if memberList[idx].UserId == memberExtList[dIndex].UserId {
+				temp.Desc = memberExtList[dIndex].Desc
+			}
+		}
+		temp.IsBest = memberList[idx].IsBest
+		temp.IsMember = memberList[idx].IsMember
+		temp.MemberLimit = memberList[idx].MemberLimit
+		memberLists = append(memberLists, temp)
+	}
+
+	return
+}
+
+//GetTagList 获取所有的工种
+func (ins *IndexService) GetTagList() (tagList []model.ZMTags) {
+	odb := global.GVA_DB.Model(&model.ZMTags{}).Debug()
+	odb.Find(&tagList)
+	return tagList
 }
