@@ -101,13 +101,14 @@ func (ZMUser) TableName() string {
 
 // ZMUserExt
 type ZMUserExt struct {
-	Id      int    `json:"-"`
-	UserId  int    `json:"user_id"`
-	TagId   int    `json:"tag_id"`
-	Address string `json:"address"`
-	Desc    string `json:"desc"`
-	Demo    string `json:"demo"`
-	IsAgree int    `json:"is_agree"`
+	Id        int    `json:"-"`
+	UserId    int    `json:"user_id"`
+	TagId     int    `json:"tag_id"`
+	Address   string `json:"address"`
+	Desc      string `json:"desc"`
+	Demo      string `json:"demo"`
+	IsAgree   int    `json:"is_agree"`
+	ViewCount int    `json:"view_count"`
 }
 
 // ZMUserExt ZMUserExt 表名

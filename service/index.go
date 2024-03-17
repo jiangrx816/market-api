@@ -88,6 +88,7 @@ func (ins *IndexService) ApiGetMemberList(page, tType int) (memberLists []respon
 		for dIndex, _ := range memberExtList {
 			if memberList[idx].UserId == memberExtList[dIndex].UserId {
 				temp.Desc = memberExtList[dIndex].Desc
+				temp.ViewCount = memberExtList[dIndex].ViewCount
 			}
 		}
 		temp.IsBest = memberList[idx].IsBest
