@@ -46,8 +46,7 @@ func (ins *IndexService) ApiGetPayList() (payListData []response.FormatData) {
 }
 
 //ApiGetGoodMemberList 获取优选工匠列表
-func (ins *IndexService) ApiGetGoodMemberList(page, tType int) (memberLists []response.MemberData) {
-
+func (ins *IndexService) ApiGetGoodMemberList(page, tType int) (memberLists []response.MemberData, count int64) {
 	tagDataList := ins.GetTagList()
 	size := global.DEFAULT_PAGE_SIZE
 	offset := size * (page - 1)
@@ -57,6 +56,7 @@ func (ins *IndexService) ApiGetGoodMemberList(page, tType int) (memberLists []re
 	if tType > 0 {
 		odb = odb.Where(" tag_id = ?", tType)
 	}
+	odb.Count(&count)
 	odb = odb.Order("id desc").Limit(size).Offset(offset)
 	odb.Find(&memberList)
 

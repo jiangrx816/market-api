@@ -43,9 +43,10 @@ func ApiGetGoodMemberList(c *gin.Context) {
 	page := utils.GetIntParamItem("page", 10, c)
 	tType := utils.GetIntParamItem("type", 0, c)
 	var service service.IndexService
-	list := service.ApiGetGoodMemberList(page, tType)
+	list, count := service.ApiGetGoodMemberList(page, tType)
 	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
-		"list": list,
+		"list":  list,
+		"count": count,
 	}, global.SUCCESS_MSG, c)
 }
 
