@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"log"
 	"market/common"
 	"market/global"
 	"market/service"
@@ -90,6 +91,7 @@ func ApiDoMakeTaskData(c *gin.Context) {
 	address := c.DefaultPostForm("address", "")
 	title := c.DefaultPostForm("title", "")
 
+	log.Println(desc,tagId,userId,address,title)
 	var service service.IndexService
 
 	res := service.ApiDoMakeTaskData(title,desc,address,tagId,userId)
