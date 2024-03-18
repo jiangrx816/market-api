@@ -13,3 +13,12 @@ func GetIntParamItem(param string, defaultInt int, c *gin.Context) (paramInt int
 	}
 	return
 }
+
+// TruncateString 截取指定的字符串
+func TruncateString(s string, num int) string {
+	runes := []rune(s)
+	if len(runes) <= num {
+		return s
+	}
+	return string(runes[:num])
+}

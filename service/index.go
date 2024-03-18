@@ -164,7 +164,8 @@ func (ins *IndexService) ApiGetTaskList(page, tType int) (taskLists []response.F
 				temp.TagName = tagDataList[dIndex].Name
 			}
 		}
-		temp.Desc = taskList[idx].Desc
+
+		temp.Desc = utils.TruncateString(taskList[idx].Desc, 60) + "..."
 		for dIndex, _ := range memberList {
 			if taskList[idx].UserId == memberList[dIndex].UserId {
 				temp.Mobile = memberList[dIndex].Mobile
