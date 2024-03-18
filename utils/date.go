@@ -7,6 +7,7 @@ import (
 
 const (
 	DEFAULT_LAYOUT_DATE_TIME = "2006-01-02 15:04:05"
+	DEFAULT_LAYOUT_DATE_TIME_1 = "2006-01-02 15:04"
 	DEFAULT_LAYOUT_DATE      = "2006-01-02"
 	DEFAULT_LAYOUT_DATE_YMD  = "20060102"
 )
@@ -61,6 +62,13 @@ func GetDateToUnixNanoTimestamp(inputDateTime string) (timestamp int64) {
 func GetUnixTimeToDateTime(timestamp int64) (dateTime string) {
 	TimeLocation, _ := time.LoadLocation("Asia/Shanghai") //指定时区
 	dateTime = time.Unix(timestamp, 0).In(TimeLocation).Format(DEFAULT_LAYOUT_DATE_TIME)
+	return
+}
+
+//GetUnixTimeToDate 时间戳转日期时间
+func GetUnixTimeToDateTime1(timestamp int64) (dateTime string) {
+	TimeLocation, _ := time.LoadLocation("Asia/Shanghai") //指定时区
+	dateTime = time.Unix(timestamp, 0).In(TimeLocation).Format(DEFAULT_LAYOUT_DATE_TIME_1)
 	return
 }
 
