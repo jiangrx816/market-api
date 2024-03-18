@@ -82,6 +82,22 @@ func ApiGetTaskInfo(c *gin.Context) {
 	}, global.SUCCESS_MSG, c)
 }
 
+//ApiDoMakeTaskData 发布任务
+func ApiDoMakeTaskData(c *gin.Context) {
+	desc := c.DefaultPostForm("task_desc", "")
+	tagId := c.DefaultPostForm("tag_id", "0")
+	userId := c.DefaultPostForm("user_id", "0")
+	address := c.DefaultPostForm("address", "")
+	title := c.DefaultPostForm("title", "")
+
+	var service service.IndexService
+
+	res := service.ApiDoMakeTaskData(title,desc,address,tagId,userId)
+	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
+		"result": res,
+	}, global.SUCCESS_MSG, c)
+}
+
 //ApiUploadFileData 上传录音
 func ApiUploadFileData(c *gin.Context) {
 	file, err := c.FormFile("file")

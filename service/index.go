@@ -154,7 +154,6 @@ func (ins *IndexService) ApiGetTaskList(page, tType int) (taskLists []response.F
 	odbUser := global.GVA_DB.Model(&model.ZMUser{}).Debug()
 	odb = odbUser.Where("user_id in(?)", userIds).Find(&memberList)
 
-
 	var temp response.FormatTaskData
 	for idx, _ := range taskList {
 		temp.Id = taskList[idx].Id
@@ -214,5 +213,24 @@ func (ins *IndexService) GetTagList() (tagList []model.ZMTags) {
 func (ins *IndexService) GetTagInfo(tagId int) (tagInfo model.ZMTags) {
 	odb := global.GVA_DB.Model(&model.ZMTags{}).Debug()
 	odb.Where("id=?", tagId).First(&tagInfo)
+	return
+}
+
+//ApiDoMakeTaskData 发布任务
+func (ins *IndexService) ApiDoMakeTaskData(title, desc, address, tagId, userId string) (result bool) {
+	var task model.ZMTask
+	odb := global.GVA_DB.Model(&model.ZMTask{}).Debug()
+	tagIdInt, _ := strconv.Atoi(tagId)
+	task.TagId = tagIdInt
+	userIdInt, _ := strconv.Atoi(userId)
+	task.UserId = userIdInt
+	task.Title = title
+	task.Desc = desc
+	task.Address = address
+	task.AddTime = utils.GetCurrentUnixTimestamp()
+	affected := odb.Create(&task).RowsAffected
+	if affected > 0 {
+		result = true
+	}
 	return
 }
