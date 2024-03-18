@@ -1,11 +1,14 @@
 package service
 
 import (
+	"context"
+	"fmt"
 	"market/common/request"
 	"market/common/response"
 	"market/model"
 	"market/utils"
 	"strconv"
+	"time"
 )
 import "market/global"
 
@@ -217,6 +220,19 @@ func (ins *IndexService) GetTagInfo(tagId int) (tagInfo model.ZMTags) {
 	return
 }
 
+//ApiCheckPushTask 校验是否可发布
+func (ins *IndexService) ApiCheckPushTask(userId int) (result bool) {
+	s, _ := global.GVA_REDIS.Get(context.Background(), fmt.Sprintf("userPushTask_%d", userId)).Result()
+
+	atoi, _ := strconv.Atoi(s)
+
+	if atoi < 1 {
+		result = true
+	}
+
+	return
+}
+
 //ApiDoMakeTaskData 发布任务
 func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (result bool) {
 	if taskData.Title == "" || taskData.TaskDesc == "" || taskData.Address == "" || taskData.TagId == 0 || taskData.UserId == 0 {
@@ -229,11 +245,13 @@ func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (resul
 	task.Title = taskData.Title
 	task.Desc = taskData.TaskDesc
 	task.Address = taskData.Address
+	task.Status = 1
 	task.AddTime = utils.GetCurrentUnixTimestamp()
 	task.CreatedAt = utils.GetCurrentDateTime()
 	affected := odb.Create(&task).RowsAffected
 	if affected > 0 {
 		result = true
+		global.GVA_REDIS.SetNX(context.Background(),fmt.Sprintf("userPushTask_%d", task.UserId),1,time.Duration(300)*time.Second)
 	}
 	return
 }

@@ -31,6 +31,8 @@ func InitRouter() *gin.Engine {
 		api.GET("/getTaskInfo", app.ApiGetTaskInfo)
 		//发布任务
 		api.POST("/doMakeTaskData", app.ApiDoMakeTaskData)
+		//校验是否可发布
+		api.GET("/checkPushTask", app.ApiCheckPushTask)
 	}
 
 	return router

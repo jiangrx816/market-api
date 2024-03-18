@@ -102,6 +102,16 @@ func ApiDoMakeTaskData(c *gin.Context) {
 	}, global.SUCCESS_MSG, c)
 }
 
+//ApiCheckPushTask 校验是否可发布
+func ApiCheckPushTask(c *gin.Context) {
+	userId := utils.GetIntParamItem("user_id", 0, c)
+	var service service.IndexService
+	info := service.ApiCheckPushTask(userId)
+	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
+		"info": info,
+	}, global.SUCCESS_MSG, c)
+}
+
 //ApiUploadFileData 上传录音
 func ApiUploadFileData(c *gin.Context) {
 	file, err := c.FormFile("file")
