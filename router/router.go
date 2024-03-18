@@ -25,6 +25,10 @@ func InitRouter() *gin.Engine {
 		api.GET("/getMemberList", app.ApiGetGoodMemberList)
 		//获取会员详情
 		api.GET("/getMemberInfo", app.ApiGetMemberInfo)
+		//获取任务列表
+		api.GET("/getTaskList", app.ApiGetTaskList)
+		//获取任务详情
+		api.GET("/getTaskInfo", app.ApiGetTaskInfo)
 	}
 
 	return router

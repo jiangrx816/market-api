@@ -64,13 +64,15 @@ func (ZMTags) TableName() string {
 
 // ZMTask
 type ZMTask struct {
-	Id      int    `json:"-"`
-	Title   string `json:"title"`
-	Desc    string `json:"desc"`
-	UserId  string `json:"user_id"`
-	TagId   int    `json:"tag_id"`
-	Status  int    `json:"status"`
-	Address string `json:"address"`
+	Id        int    `json:"-"`
+	Title     string `json:"title"`
+	Desc      string `json:"desc"`
+	UserId    int    `json:"user_id"`
+	TagId     int    `json:"tag_id"`
+	Status    int    `json:"status"`
+	Address   string `json:"address"`
+	CreatedAt string `json:"created_at"`
+	AddTime   int64  `json:"add_time"`
 }
 
 // ZMTask ZMTask 表名

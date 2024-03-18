@@ -3,6 +3,7 @@ package service
 import (
 	"market/common/response"
 	"market/model"
+	"market/utils"
 	"strconv"
 )
 import "market/global"
@@ -125,6 +126,78 @@ func (ins *IndexService) ApiGetMemberInfo(userId int) (userInfo response.MemberD
 	userInfo.Desc = userExt.Desc
 	userInfo.Demo = userExt.Demo
 	userInfo.ViewCount = userExt.ViewCount
+
+	return
+}
+
+//ApiGetTaskList 获取任务列表
+func (ins *IndexService) ApiGetTaskList(page, tType int) (taskLists []response.FormatTaskData, count int64) {
+	tagDataList := ins.GetTagList()
+	size := global.DEFAULT_PAGE_SIZE
+	offset := size * (page - 1)
+	var taskList []model.ZMTask
+	odb := global.GVA_DB.Model(&model.ZMTask{}).Debug()
+	odb = odb.Where("status > 0")
+	if tType > 0 {
+		odb = odb.Where(" tag_id = ?", tType)
+	}
+	odb.Count(&count)
+	odb = odb.Order("id desc").Limit(size).Offset(offset)
+	odb.Find(&taskList)
+
+	//组合userId的集合
+	var userIds []int
+	for idx, _ := range taskList {
+		userIds = append(userIds, taskList[idx].UserId)
+	}
+	var memberList []model.ZMUser
+	odbUser := global.GVA_DB.Model(&model.ZMUser{}).Debug()
+	odb = odbUser.Where("user_id in(?)", userIds).Find(&memberList)
+
+
+	var temp response.FormatTaskData
+	for idx, _ := range taskList {
+		temp.Id = taskList[idx].Id
+		temp.TagId = taskList[idx].TagId
+		for dIndex, _ := range tagDataList {
+			if taskList[idx].TagId == tagDataList[dIndex].Id {
+				temp.TagName = tagDataList[dIndex].Name
+			}
+		}
+		temp.Desc = taskList[idx].Desc
+		for dIndex, _ := range memberList {
+			if taskList[idx].UserId == memberList[dIndex].UserId {
+				temp.Mobile = memberList[dIndex].Mobile
+			}
+		}
+
+		temp.Date = utils.GetUnixTimeToDateTime(taskList[idx].AddTime)
+		temp.Address = taskList[idx].Address
+
+		taskLists = append(taskLists, temp)
+	}
+
+	return
+}
+
+//ApiGetTaskInfo 获取任务详情
+func (ins *IndexService) ApiGetTaskInfo(taskId int) (taskInfo response.FormatTaskData) {
+	var task model.ZMTask
+	odb := global.GVA_DB.Model(&model.ZMTask{}).Debug()
+	odb.Where("id=?", taskId).First(&task)
+
+	var user model.ZMUser
+	odbUser := global.GVA_DB.Model(&model.ZMUser{}).Debug()
+	odbUser.Where("user_id=?", task.UserId).First(&user)
+
+	tagInfo := ins.GetTagInfo(task.TagId)
+	taskInfo.Id = task.Id
+	taskInfo.TagId = task.TagId
+	taskInfo.TagName = tagInfo.Name
+	taskInfo.Desc = task.Desc
+	taskInfo.Mobile = user.Mobile
+	taskInfo.Date = utils.GetUnixTimeToDateTime(task.AddTime)
+	taskInfo.Address = task.Address
 
 	return
 }

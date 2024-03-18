@@ -25,3 +25,13 @@ type MemberData struct {
 	ViewCount   int    `json:"view_count"`
 	Demo        string `json:"demo"`
 }
+
+type FormatTaskData struct {
+	Id      int    `json:"id"`
+	TagId   int    `json:"tag_id"`
+	TagName string `json:"tag_name"`
+	Desc    string `json:"desc"`
+	Mobile  string `json:"mobile"`
+	Date    string `json:"date"`
+	Address string `json:"address"`
+}

@@ -60,6 +60,28 @@ func ApiGetMemberInfo(c *gin.Context) {
 	}, global.SUCCESS_MSG, c)
 }
 
+//ApiGetTaskList 获取任务列表
+func ApiGetTaskList(c *gin.Context) {
+	page := utils.GetIntParamItem("page", 10, c)
+	tType := utils.GetIntParamItem("type", 0, c)
+	var service service.IndexService
+	list, count := service.ApiGetTaskList(page, tType)
+	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
+		"list":  list,
+		"count": count,
+	}, global.SUCCESS_MSG, c)
+}
+
+//ApiGetTaskInfo 获取任务详情
+func ApiGetTaskInfo(c *gin.Context) {
+	taskId := utils.GetIntParamItem("task_id", 0, c)
+	var service service.IndexService
+	info := service.ApiGetTaskInfo(taskId)
+	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
+		"info": info,
+	}, global.SUCCESS_MSG, c)
+}
+
 //ApiUploadFileData 上传录音
 func ApiUploadFileData(c *gin.Context) {
 	file, err := c.FormFile("file")
