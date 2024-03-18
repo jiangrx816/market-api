@@ -25,6 +25,8 @@ func InitRouter() *gin.Engine {
 		api.GET("/getMemberList", app.ApiGetGoodMemberList)
 		//获取会员详情
 		api.GET("/getMemberInfo", app.ApiGetMemberInfo)
+		//更新用户资料信息
+		api.POST("/updateMemberData", app.ApiUpdateMemberData)
 		//获取任务列表
 		api.GET("/getTaskList", app.ApiGetTaskList)
 		//获取任务详情

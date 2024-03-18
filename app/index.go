@@ -102,6 +102,22 @@ func ApiDoMakeTaskData(c *gin.Context) {
 	}, global.SUCCESS_MSG, c)
 }
 
+//ApiUpdateMemberData 更新用户资料信息
+func ApiUpdateMemberData(c *gin.Context) {
+	var json request.MemberUpdateData
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	var service service.IndexService
+
+	res := service.ApiUpdateMemberData(json)
+	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
+		"result": res,
+	}, global.SUCCESS_MSG, c)
+}
+
+
 //ApiCheckPushTask 校验是否可发布
 func ApiCheckPushTask(c *gin.Context) {
 	userId := utils.GetIntParamItem("user_id", 0, c)

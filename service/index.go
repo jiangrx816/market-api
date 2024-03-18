@@ -251,7 +251,27 @@ func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (resul
 	affected := odb.Create(&task).RowsAffected
 	if affected > 0 {
 		result = true
-		global.GVA_REDIS.SetNX(context.Background(),fmt.Sprintf("userPushTask_%d", task.UserId),1,time.Duration(300)*time.Second)
+		global.GVA_REDIS.SetNX(context.Background(), fmt.Sprintf("userPushTask_%d", task.UserId), 1, time.Duration(300)*time.Second)
 	}
 	return
+}
+
+//ApiUpdateMemberData 更新用户资料信息
+func (ins *IndexService) ApiUpdateMemberData(memberData request.MemberUpdateData) (result bool) {
+	if memberData.UserId <= 0 {
+		return
+	}
+	var member model.ZMUser
+	if memberData.NickName != "" {
+		member.NickName = memberData.NickName
+	}
+	if memberData.Mobile != "" {
+		member.Mobile = memberData.Mobile
+	}
+	if memberData.HeadUrl != "" {
+		member.HeadUrl = memberData.HeadUrl
+	}
+
+	global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id=?", memberData.UserId).Update(&member)
+	return true
 }
