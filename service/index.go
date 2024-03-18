@@ -1,6 +1,7 @@
 package service
 
 import (
+	"market/common/request"
 	"market/common/response"
 	"market/model"
 	"market/utils"
@@ -217,16 +218,17 @@ func (ins *IndexService) GetTagInfo(tagId int) (tagInfo model.ZMTags) {
 }
 
 //ApiDoMakeTaskData 发布任务
-func (ins *IndexService) ApiDoMakeTaskData(title, desc, address, tagId, userId string) (result bool) {
+func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (result bool) {
+	if taskData.Title == "" || taskData.TaskDesc == "" || taskData.Address == "" || taskData.TagId == 0 || taskData.UserId == 0 {
+		return
+	}
 	var task model.ZMTask
 	odb := global.GVA_DB.Model(&model.ZMTask{}).Debug()
-	tagIdInt, _ := strconv.Atoi(tagId)
-	task.TagId = tagIdInt
-	userIdInt, _ := strconv.Atoi(userId)
-	task.UserId = userIdInt
-	task.Title = title
-	task.Desc = desc
-	task.Address = address
+	task.TagId = taskData.TagId
+	task.UserId = taskData.UserId
+	task.Title = taskData.Title
+	task.Desc = taskData.TaskDesc
+	task.Address = taskData.Address
 	task.AddTime = utils.GetCurrentUnixTimestamp()
 	affected := odb.Create(&task).RowsAffected
 	if affected > 0 {

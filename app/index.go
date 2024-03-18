@@ -3,11 +3,12 @@ package app
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"log"
 	"market/common"
+	"market/common/request"
 	"market/global"
 	"market/service"
 	"market/utils"
+	"net/http"
 	"path"
 	"strings"
 )
@@ -85,16 +86,15 @@ func ApiGetTaskInfo(c *gin.Context) {
 
 //ApiDoMakeTaskData 发布任务
 func ApiDoMakeTaskData(c *gin.Context) {
-	desc := c.DefaultPostForm("task_desc", "")
-	tagId := c.DefaultPostForm("tag_id", "0")
-	userId := c.DefaultPostForm("user_id", "0")
-	address := c.DefaultPostForm("address", "")
-	title := c.DefaultPostForm("title", "")
+	var json request.MakeTaskData
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	log.Println(desc,tagId,userId,address,title)
 	var service service.IndexService
 
-	res := service.ApiDoMakeTaskData(title,desc,address,tagId,userId)
+	res := service.ApiDoMakeTaskData(json)
 	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
 		"result": res,
 	}, global.SUCCESS_MSG, c)
