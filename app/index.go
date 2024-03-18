@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"log"
 	"market/common"
 	"market/common/request"
 	"market/global"
@@ -94,6 +95,7 @@ func ApiDoMakeTaskData(c *gin.Context) {
 
 	var service service.IndexService
 
+	log.Println(json)
 	res := service.ApiDoMakeTaskData(json)
 	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
 		"result": res,
