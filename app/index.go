@@ -130,15 +130,16 @@ func ApiCheckPushTask(c *gin.Context) {
 
 //ApiUploadFileData 上传录音
 func ApiUploadFileData(c *gin.Context) {
+	//存放的业务目录
+	filePath := c.PostForm("path")
 	file, err := c.FormFile("file")
-	filePath := "market/member/ext"
 	if err == nil {
 		Path := fmt.Sprintf("/data/static/%s", filePath)
 		dst := path.Join(Path, file.Filename)
 		fmt.Printf("file.Filename:%s \n", file.Filename)
 		fmt.Printf("dst:%s \n", dst)
 		c.SaveUploadedFile(file, dst)
-		dst = strings.Replace(dst, Path, "https://static.58haha.com/poetry_log", 1)
+		dst = strings.Replace(dst, Path, "https://oss.58haha.com/poetry_log", 1)
 		fmt.Printf("dst:%s \n", dst)
 		c.JSON(200, gin.H{
 			"dst": dst,
