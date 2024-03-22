@@ -117,7 +117,6 @@ func ApiUpdateMemberData(c *gin.Context) {
 	}, global.SUCCESS_MSG, c)
 }
 
-
 //ApiCheckPushTask 校验是否可发布
 func ApiCheckPushTask(c *gin.Context) {
 	userId := utils.GetIntParamItem("user_id", 0, c)
@@ -139,7 +138,7 @@ func ApiUploadFileData(c *gin.Context) {
 		fmt.Printf("file.Filename:%s \n", file.Filename)
 		fmt.Printf("dst:%s \n", dst)
 		c.SaveUploadedFile(file, dst)
-		dst = strings.Replace(dst, Path, "https://oss.58haha.com/poetry_log", 1)
+		dst = strings.Replace(dst, Path, "https://oss.58haha.com/"+filePath+"/", 1)
 		fmt.Printf("dst:%s \n", dst)
 		c.JSON(200, gin.H{
 			"dst": dst,
