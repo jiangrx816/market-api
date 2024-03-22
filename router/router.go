@@ -36,6 +36,13 @@ func InitRouter() *gin.Engine {
 		//校验是否可发布
 		api.GET("/checkPushTask", app.ApiCheckPushTask)
 	}
+	//路由组v1
+	apiWxApi := router.Group("api/wechat")
+	apiWxApi.Use()
+	{
+		//获取openid
+		apiWxApi.GET("/getWxData", app.ApiGetWechatData)
+	}
 
 	return router
 }

@@ -48,3 +48,22 @@ func SendHttpPost(httpUrl string, HttpParamList []HttpParams) (body []byte) {
 	//jsonString = string(body)
 	return
 }
+
+
+// 发起 HTTP GET 请求并返回响应内容和可能的错误
+func SendGetRequest(url string) ([]byte, error) {
+	// 发起 GET 请求
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	// 读取响应内容
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return body, nil
+}
