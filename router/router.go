@@ -44,6 +44,10 @@ func InitRouter() *gin.Engine {
 	{
 		//获取openid
 		apiWxApi.GET("/getWxData", app.ApiGetWechatData)
+		//获取access_token
+		apiWxApi.GET("/getWxAccessToken", app.ApiGetWxAccessToken)
+		//获取用户手机号
+		apiWxApi.POST("/getWxUserPhoneNumber", app.ApiGetWxUserPhoneNumber)
 	}
 
 	return router
