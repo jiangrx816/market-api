@@ -98,9 +98,10 @@ func (ins *IndexService) ApiGetGoodMemberList(page, tType int) (memberLists []re
 				temp.TagName = tagDataList[dIndex].Name
 			}
 		}
+
 		for dIndex, _ := range memberExtList {
 			if memberList[idx].UserId == memberExtList[dIndex].UserId {
-				temp.Desc = memberExtList[dIndex].Desc
+				temp.Desc = utils.TruncateString(memberExtList[dIndex].Desc, 60) + "......"
 				temp.ViewCount = memberExtList[dIndex].ViewCount
 			}
 		}
