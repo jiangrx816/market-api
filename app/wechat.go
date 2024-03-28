@@ -3,8 +3,10 @@ package app
 import (
 	"github.com/gin-gonic/gin"
 	"market/common"
+	"market/common/request"
 	"market/global"
 	"market/service"
+	"net/http"
 )
 
 //ApiGetWechatData 根据code换取 openId, sessionKey, unionId
@@ -28,10 +30,15 @@ func ApiGetWxAccessToken(c *gin.Context) {
 
 //ApiGetWxUserPhoneNumber 获取用户手机号
 func ApiGetWxUserPhoneNumber(c *gin.Context) {
+	var json request.MakePhotoData
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	var service service.WechatService
-	token, _ := c.GetPostForm("token")
-	code, _ := c.GetPostForm("code")
-	data := service.ApiGetWxUserPhoneNumber(code, token)
+
+	data := service.ApiGetWxUserPhoneNumber(json)
 	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
 		"data": data,
 	}, global.SUCCESS_MSG, c)

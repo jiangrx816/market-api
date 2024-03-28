@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"market/common/request"
 	"market/global"
 	"market/utils"
 	"net/http"
@@ -32,9 +33,12 @@ func (ws *WechatService) ApiGetWxAccessToken() (wxInfo string) {
 }
 
 //ApiGetWxUserPhoneNumber 获取用户手机号
-func (ws *WechatService) ApiGetWxUserPhoneNumber(code, token string) (wxInfo string) {
-	url := fmt.Sprintf("https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=%s", token)
-	data := bytes.NewBufferString("code=" + code)
+func (ws *WechatService) ApiGetWxUserPhoneNumber(photoData request.MakePhotoData) (wxInfo string) {
+	if photoData.Token == "" || photoData.Code == "" {
+		return
+	}
+	url := fmt.Sprintf("https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=%s", photoData.Token)
+	data := bytes.NewBufferString("code=" + photoData.Code)
 	req, err := http.NewRequest("POST", url, data)
 
 	if err != nil {

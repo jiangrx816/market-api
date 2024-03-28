@@ -22,3 +22,8 @@ type MemberUpdateData struct {
 	HeadUrl  string `json:"head_url"`
 	Mobile   string `json:"mobile"`
 }
+
+type MakePhotoData struct {
+	Code  string `json:"code"`
+	Token string `json:"token"`
+}
