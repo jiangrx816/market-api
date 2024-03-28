@@ -2,9 +2,9 @@ package service
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"market/common/request"
 	"market/global"
 	"market/utils"
@@ -37,28 +37,29 @@ func (ws *WechatService) ApiGetWxUserPhoneNumber(photoData request.MakePhotoData
 	if photoData.Token == "" || photoData.Code == "" {
 		return
 	}
-	url := fmt.Sprintf("https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=%s", photoData.Token)
-	data := bytes.NewBufferString("code=" + photoData.Code)
-	req, err := http.NewRequest("POST", url, data)
-
+	// 构造请求的数据
+	requestBody, err := json.Marshal(map[string]string{
+		"code": photoData.Code,
+	})
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("Error encoding request body:", err)
+		return
 	}
 
-	//req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	resp, err := http.DefaultClient.Do(req)
+	// 发起 POST 请求
+	resp, err := http.Post(fmt.Sprintf("https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=%s", photoData.Token), "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("Error making request:", err)
+		return
 	}
-
 	defer resp.Body.Close()
+
+	// 读取响应数据
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println("Error reading response body:", err)
+		return
 	}
-
 	wxInfo = string(body)
-	log.Println(string(body))
-
 	return
 }
