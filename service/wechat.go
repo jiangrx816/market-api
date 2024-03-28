@@ -33,7 +33,7 @@ func (ws *WechatService) ApiGetWxAccessToken() (wxInfo string) {
 
 //ApiGetWxUserPhoneNumber 获取用户手机号
 func (ws *WechatService) ApiGetWxUserPhoneNumber(code, token string) (wxInfo string) {
-	url := fmt.Sprintf("https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=", token)
+	url := fmt.Sprintf("https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=%s", token)
 	data := bytes.NewBufferString("code=" + code)
 	req, err := http.NewRequest("POST", url, data)
 
