@@ -14,6 +14,16 @@ import (
 	"strings"
 )
 
+//ApiGetCheckLogin 根据openId获取用户是否登录
+func ApiGetCheckLogin(c *gin.Context) {
+	openId := c.Query("open_id")
+	var service service.IndexService
+	info := service.ApiGetCheckLogin(openId)
+	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
+		"info": info,
+	}, global.SUCCESS_MSG, c)
+}
+
 //ApiGetBannerList 获取Banner列表
 func ApiGetBannerList(c *gin.Context) {
 	var service service.IndexService
@@ -147,7 +157,6 @@ func ApiUploadFileData(c *gin.Context) {
 		common.ReturnResponse(global.FAIL, map[string]interface{}{}, global.FAIL_MSG, c)
 	}
 }
-
 
 //ApiDoMakeUserData 创建用户
 func ApiDoMakeUserData(c *gin.Context) {

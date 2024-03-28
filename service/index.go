@@ -15,6 +15,13 @@ import "market/global"
 type IndexService struct {
 }
 
+//ApiGetCheckLogin 根据openId获取用户是否登录
+func (ins *IndexService) ApiGetCheckLogin(openId string) (userInfo model.ZMUser) {
+	db := global.GVA_DB.Model(&model.ZMUser{}).Debug()
+	db = db.Where("status=1 AND open_id = ?", openId).First(&userInfo)
+	return
+}
+
 //ApiGetBannerList 获取Banner的列表信息
 func (ins *IndexService) ApiGetBannerList() (bannerList []model.ZMBanner) {
 	bookDB := global.GVA_DB.Model(&model.ZMBanner{}).Debug()

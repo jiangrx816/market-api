@@ -13,6 +13,8 @@ func InitRouter() *gin.Engine {
 	api := router.Group("api/v1")
 	api.Use()
 	{
+		//根据openId获取用户是否登录
+		api.GET("/getCheckLogin", app.ApiGetCheckLogin)
 		//上传文件
 		api.POST("/uploadFile", app.ApiUploadFileData)
 		//获取banner列表
