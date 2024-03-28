@@ -8,9 +8,10 @@ import (
 
 func InitRouter() *gin.Engine {
 	router := gin.New()
-
+	router.MaxMultipartMemory = 32 << 20 // 32MB
 	//路由组v1
 	api := router.Group("api/v1")
+
 	api.Use()
 	{
 		//根据openId获取用户是否登录
