@@ -3,9 +3,17 @@ package request
 type MakeTaskData struct {
 	TaskDesc string `json:"task_desc"`
 	TagId    int    `json:"tag_id"`
-	UserId   int    `json:"user_id"`
+	UserId   int64  `json:"user_id"`
 	Address  string `json:"address"`
 	Title    string `json:"title"`
+}
+
+type MakeUserData struct {
+	Mobile   string `json:"mobile"`
+	OpenId   string `json:"open_id"`
+	Type     int    `json:"type"`
+	NickName string `json:"nick_name"`
+	HeadImg  string `json:"head_img"`
 }
 
 type MemberUpdateData struct {

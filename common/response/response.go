@@ -10,7 +10,7 @@ type FormatData struct {
 
 type MemberData struct {
 	Id          int    `json:"id"`
-	UserId      int    `json:"user_id"`
+	UserId      int64    `json:"user_id"`
 	OpenId      string `json:"open_id"`
 	NickName    string `json:"nick_name"`
 	RealName    string `json:"real_name"`

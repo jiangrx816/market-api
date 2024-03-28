@@ -35,6 +35,8 @@ func InitRouter() *gin.Engine {
 		api.POST("/doMakeTaskData", app.ApiDoMakeTaskData)
 		//校验是否可发布
 		api.GET("/checkPushTask", app.ApiCheckPushTask)
+		//创建用户
+		api.POST("/doMakeUserData", app.ApiDoMakeUserData)
 	}
 	//路由组v1
 	apiWxApi := router.Group("api/wechat")

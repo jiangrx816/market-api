@@ -66,7 +66,7 @@ func (ins *IndexService) ApiGetGoodMemberList(page, tType int) (memberLists []re
 	odb.Find(&memberList)
 
 	//组合userId的集合
-	var userIds []int
+	var userIds []int64
 	for idx, _ := range memberList {
 		userIds = append(userIds, memberList[idx].UserId)
 	}
@@ -150,7 +150,7 @@ func (ins *IndexService) ApiGetTaskList(page, tType int) (taskLists []response.F
 	odb.Find(&taskList)
 
 	//组合userId的集合
-	var userIds []int
+	var userIds []int64
 	for idx, _ := range taskList {
 		userIds = append(userIds, taskList[idx].UserId)
 	}
@@ -274,4 +274,32 @@ func (ins *IndexService) ApiUpdateMemberData(memberData request.MemberUpdateData
 
 	global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id=?", memberData.UserId).Update(&member)
 	return true
+}
+
+//ApiDoMakeUserData 创建用户
+func (ins *IndexService) ApiDoMakeUserData(userData request.MakeUserData) (result bool) {
+	if userData.Type < 0 || userData.Mobile == "" || userData.OpenId == "" {
+		return
+	}
+	var user model.ZMUser
+	odb := global.GVA_DB.Model(&model.ZMUser{}).Debug()
+	var userIdTemp = utils.GetCurrentUnixTimestamp()
+	user.UserId = userIdTemp
+	user.OpenId = userData.OpenId
+	if userData.Type == 2 {
+		user.OpenId = "app-" + strconv.FormatInt(userIdTemp, 10)
+	}
+	user.Mobile = userData.Mobile
+	user.Type = userData.Type
+	if userData.NickName != "" && len(userData.NickName) > 1 {
+		user.NickName = userData.NickName
+	}
+	if userData.HeadImg != "" && len(userData.HeadImg) > 10 {
+		user.HeadUrl = userData.HeadImg
+	}
+	affected := odb.Create(&user).RowsAffected
+	if affected > 0 {
+		result = true
+	}
+	return
 }

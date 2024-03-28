@@ -147,3 +147,21 @@ func ApiUploadFileData(c *gin.Context) {
 		common.ReturnResponse(global.FAIL, map[string]interface{}{}, global.FAIL_MSG, c)
 	}
 }
+
+
+//ApiDoMakeUserData 创建用户
+func ApiDoMakeUserData(c *gin.Context) {
+	var json request.MakeUserData
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var service service.IndexService
+
+	log.Println(json)
+	res := service.ApiDoMakeUserData(json)
+	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
+		"result": res,
+	}, global.SUCCESS_MSG, c)
+}
