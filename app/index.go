@@ -1,7 +1,6 @@
 package app
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
 	"market/common"
@@ -10,8 +9,8 @@ import (
 	"market/service"
 	"market/utils"
 	"net/http"
-	"path"
-	"strings"
+	"path/filepath"
+	"time"
 )
 
 //ApiGetCheckLogin 根据openId获取用户是否登录
@@ -139,23 +138,48 @@ func ApiCheckPushTask(c *gin.Context) {
 
 //ApiUploadFileData 上传录音
 func ApiUploadFileData(c *gin.Context) {
-	//存放的业务目录
-	filePath := c.PostForm("path")
+	// 获取上传的文件
 	file, err := c.FormFile("file")
-	if err == nil {
-		Path := fmt.Sprintf("/data/static/%s", filePath)
-		dst := path.Join(Path, file.Filename)
-		fmt.Printf("file.Filename:%s \n", file.Filename)
-		fmt.Printf("dst:%s \n", dst)
-		c.SaveUploadedFile(file, dst)
-		dst = strings.Replace(dst, Path, "https://oss.58haha.com/"+filePath, 1)
-		fmt.Printf("dst:%s \n", dst)
+	if err != nil {
+		common.ReturnResponse(global.FAIL, map[string]interface{}{}, global.FAIL_MSG, c)
+		return
+	}
+	// 获取文件名
+	fileName := filepath.Base(file.Filename)
+	// 获取文件扩展名
+	extension := filepath.Ext(fileName)
+
+	// 生成文件名（使用时间戳）
+	fName := time.Now().Format("20060102150405") + extension
+
+	path := "/data/static/market"
+
+	// 保存文件到服务器
+	c.SaveUploadedFile(file, filepath.Join(path, fName))
+
+
+	dst := "https://oss.58haha.com/market/" + fName
+
 		c.JSON(200, gin.H{
 			"dst": dst,
 		})
-	} else {
-		common.ReturnResponse(global.FAIL, map[string]interface{}{}, global.FAIL_MSG, c)
-	}
+	////存放的业务目录
+	//file, err := c.FormFile("file")
+	//
+	//if err == nil {
+	//	Path := "/data/static/market"
+	//	dst := path.Join(Path, file.Filename)
+	//	fmt.Printf("file.Filename:%s \n", file.Filename)
+	//	fmt.Printf("dst:%s \n", dst)
+	//	c.SaveUploadedFile(file, dst)
+	//	dst = strings.Replace(dst, Path, "https://oss.58haha.com/market", 1)
+	//	fmt.Printf("dst:%s \n", dst)
+	//	c.JSON(200, gin.H{
+	//		"dst": dst,
+	//	})
+	//} else {
+	//	common.ReturnResponse(global.FAIL, map[string]interface{}{}, global.FAIL_MSG, c)
+	//}
 }
 
 //ApiDoMakeUserData 创建用户
