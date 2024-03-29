@@ -6,6 +6,7 @@ type FormatData struct {
 	Checked   bool   `json:"checked"`
 	Number    int    `json:"number"`
 	NumberExt int    `json:"number_ext"`
+	TotalFee  int    `json:"total_fee"`
 }
 
 type MemberData struct {

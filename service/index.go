@@ -48,10 +48,12 @@ func (ins *IndexService) ApiGetPayList() (payListData []response.FormatData) {
 	var temp response.FormatData
 	for idx, _ := range payList {
 		temp.Checked = payList[idx].Checked
+		temp.TotalFee = payList[idx].CPrice
 		temp.Number = payList[idx].Number
 		temp.NumberExt = payList[idx].NumberExt
 		temp.Value = strconv.Itoa(payList[idx].Id)
-		temp.Name = payList[idx].Name + "（￥" + payList[idx].CPrice + "）"
+
+		temp.Name = payList[idx].Name + "（￥" + strconv.Itoa(payList[idx].CPrice) + "）"
 		payListData = append(payListData, temp)
 	}
 	return payListData

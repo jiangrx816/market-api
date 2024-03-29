@@ -36,8 +36,8 @@ func (ZMOrder) TableName() string {
 type ZMPay struct {
 	Id        int    `json:"id"`
 	Name      string `json:"name"`
-	CPrice    string `json:"c_price"`
-	OPrice    string `json:"o_price"`
+	CPrice    int    `json:"c_price"`
+	OPrice    int    `json:"o_price"`
 	Number    int    `json:"number"`
 	NumberExt int    `json:"number_ext"`
 	Checked   bool   `json:"checked"`
@@ -105,7 +105,7 @@ func (ZMUser) TableName() string {
 // ZMUserExt
 type ZMUserExt struct {
 	Id        int    `json:"-"`
-	UserId    int64    `json:"user_id"`
+	UserId    int64  `json:"user_id"`
 	TagId     int    `json:"tag_id"`
 	Address   string `json:"address"`
 	Desc      string `json:"desc"`
