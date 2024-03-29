@@ -316,7 +316,7 @@ func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (resul
 
 //ApiUpdateTaskStatus 更新任务状态
 func (ins *IndexService) ApiUpdateTaskStatus(taskData request.UpdateTaskStatus) (result bool) {
-	if taskData.TaskId < 0 || taskData.Status < 0 {
+	if taskData.TaskId < 0 {
 		return
 	}
 	var task model.ZMTask
