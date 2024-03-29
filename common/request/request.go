@@ -1,5 +1,10 @@
 package request
 
+type UpdateTaskStatus struct {
+	TaskId int `json:"task_id"`
+	Status int `json:"status"`
+}
+
 type MakeTaskData struct {
 	TaskDesc string `json:"task_desc"`
 	TagId    int    `json:"tag_id"`

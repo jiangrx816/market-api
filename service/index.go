@@ -192,6 +192,56 @@ func (ins *IndexService) ApiGetTaskList(page, tType int) (taskLists []response.F
 	return
 }
 
+//ApiGetMyTaskList 获取已发布的任务列表
+func (ins *IndexService) ApiGetMyTaskList(page, userId int) (taskLists []response.FormatTaskData, count int64) {
+	tagDataList := ins.GetTagList()
+	size := global.DEFAULT_PAGE_SIZE
+	offset := size * (page - 1)
+	var taskList []model.ZMTask
+	odb := global.GVA_DB.Model(&model.ZMTask{}).Debug()
+	odb = odb.Where("status >= 0")
+	if userId > 0 {
+		odb = odb.Where(" user_id = ?", userId)
+	}
+	odb.Count(&count)
+	odb = odb.Order("id desc").Limit(size).Offset(offset)
+	odb.Find(&taskList)
+
+	//组合userId的集合
+	var userIds []int64
+	for idx, _ := range taskList {
+		userIds = append(userIds, taskList[idx].UserId)
+	}
+	var memberList []model.ZMUser
+	odbUser := global.GVA_DB.Model(&model.ZMUser{}).Debug()
+	odb = odbUser.Where("user_id in(?)", userIds).Find(&memberList)
+
+	var temp response.FormatTaskData
+	for idx, _ := range taskList {
+		temp.Id = taskList[idx].Id
+		temp.TagId = taskList[idx].TagId
+		for dIndex, _ := range tagDataList {
+			if taskList[idx].TagId == tagDataList[dIndex].Id {
+				temp.TagName = tagDataList[dIndex].Name
+			}
+		}
+
+		temp.Desc = utils.TruncateString(taskList[idx].Desc, 50) + "......"
+		for dIndex, _ := range memberList {
+			if taskList[idx].UserId == memberList[dIndex].UserId {
+				temp.Mobile = memberList[dIndex].Mobile
+			}
+		}
+
+		temp.Date = utils.GetUnixTimeToDateTime1(taskList[idx].AddTime)
+		temp.Address = taskList[idx].Address
+
+		taskLists = append(taskLists, temp)
+	}
+
+	return
+}
+
 //ApiGetTaskInfo 获取任务详情
 func (ins *IndexService) ApiGetTaskInfo(taskId int) (taskInfo response.FormatTaskData) {
 	var task model.ZMTask
@@ -262,6 +312,17 @@ func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (resul
 		global.GVA_REDIS.SetNX(context.Background(), fmt.Sprintf("userPushTask_%d", task.UserId), 1, time.Duration(300)*time.Second)
 	}
 	return
+}
+
+//ApiUpdateTaskStatus 更新任务状态
+func (ins *IndexService) ApiUpdateTaskStatus(taskData request.UpdateTaskStatus) (result bool) {
+	if taskData.TaskId < 0 || taskData.Status < 0 {
+		return
+	}
+	var task model.ZMTask
+	task.Status = taskData.Status
+	global.GVA_DB.Model(&model.ZMTask{}).Debug().Where("id=?", taskData.TaskId).Update(&task)
+	return true
 }
 
 //ApiUpdateMemberData 更新用户资料信息

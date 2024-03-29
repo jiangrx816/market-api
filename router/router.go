@@ -32,6 +32,10 @@ func InitRouter() *gin.Engine {
 		api.POST("/updateMemberData", app.ApiUpdateMemberData)
 		//获取任务列表
 		api.GET("/getTaskList", app.ApiGetTaskList)
+		//获取已发布的任务列表
+		api.GET("/getMyTaskList", app.ApiGetMyTaskList)
+		//更新任务状态
+		api.POST("/updateTaskStatus", app.ApiUpdateTaskStatus)
 		//获取任务详情
 		api.GET("/getTaskInfo", app.ApiGetTaskInfo)
 		//发布任务
