@@ -49,6 +49,6 @@ type PayDataParams struct {
 		Currency string `json:"currency"`
 	} `json:"amount"`
 	Payer struct {
-		Openid string `json:"open_id"`
+		Openid string `json:"openid"`
 	} `json:"payer"`
 }
