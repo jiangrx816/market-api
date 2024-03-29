@@ -1,7 +1,6 @@
 package app
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"market/common"
 	"market/common/request"
@@ -52,12 +51,9 @@ func ApiGetWxPay(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	fmt.Printf("%#v", json)
-
-	//var service service.WechatService
-
-	//data := service.ApiGetWxUserPhoneNumber(json)
+	var service service.WechatService
+	data := service.ApiCreateWxPay(json)
 	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
-		"data": "data",
+		"data": data,
 	}, global.SUCCESS_MSG, c)
 }

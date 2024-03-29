@@ -16,11 +16,11 @@ func (ZMBanner) TableName() string {
 // ZMOrder
 type ZMOrder struct {
 	Id        int    `json:"-"`
-	UserId    string `json:"user_id"`
-	OrderId   string `json:"order_id"`
+	UserId    int64  `json:"user_id"`
+	OrderId   int64  `json:"order_id"`
 	Type      int    `json:"type"`
-	CPrice    string `json:"c_price"`
-	OPrice    string `json:"o_price"`
+	CPrice    int    `json:"c_price"`
+	OPrice    int    `json:"o_price"`
 	Number    int    `json:"number"`
 	NumberExt int    `json:"number_ext"`
 	Status    int    `json:"status"`
