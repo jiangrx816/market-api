@@ -127,6 +127,7 @@ func (ws *WechatService) ApiCreateOrderData(payData request.WXPayData) (orderInf
 	var order model.ZMOrder
 	odb := global.GVA_DB.Model(&model.ZMOrder{}).Debug()
 	order.Name = payItem.Name
+	order.OpenId = userInfo.OpenId
 	order.UserId = userInfo.UserId
 	order.OrderId = tempOrderId
 	order.Type = 1 //1普通会员,2优选工匠,3积分兑换
