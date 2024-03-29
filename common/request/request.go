@@ -32,3 +32,8 @@ type MakePhotoData struct {
 	Code  string `json:"code"`
 	Token string `json:"token"`
 }
+
+type WXPayData struct {
+	UserId int `json:"user_id"`
+	PayId  int `json:"pay_id"`
+}
