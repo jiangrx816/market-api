@@ -260,6 +260,7 @@ func (ins *IndexService) ApiGetTaskInfo(taskId int) (taskInfo response.FormatTas
 	taskInfo.Mobile = user.Mobile
 	taskInfo.Date = utils.GetUnixTimeToDateTime(task.AddTime)
 	taskInfo.Address = task.Address
+	taskInfo.Status = task.Status
 
 	return
 }
