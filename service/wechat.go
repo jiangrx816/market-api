@@ -93,6 +93,7 @@ func (ws *WechatService) CreatJsApi(orderInfo model.ZMOrder) {
 		return
 	}
 	jsonStr := []byte(marshal)
+	fmt.Printf("%#v \n", string(jsonStr))
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
 
 	req.Header.Set("Authorization", "")
