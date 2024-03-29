@@ -93,7 +93,7 @@ func (ws *WechatService) ApiCreateWxPay(payData request.WXPayData) {
 func (ws *WechatService) CreatJsApi(orderInfo model.ZMOrder) {
 
 	// 使用 utils 提供的函数从本地文件中加载商户私钥，商户私钥会用来生成请求的签名
-	mchPrivateKey, err := utils.LoadPrivateKeyWithPath("/path/to/merchant/apiclient_key.pem")
+	mchPrivateKey, err := utils.LoadPrivateKeyWithPath("/data/web/market-api/run/wx_market_cert/apiclient_key.pem")
 	if err != nil {
 		log.Fatal("load merchant private key error")
 	}
