@@ -81,17 +81,17 @@ func (ws *WechatService) ApiGetWxUserPhoneNumber(photoData request.MakePhotoData
 }
 
 //ApiGetWxPay 创建订单
-func (ws *WechatService) ApiCreateWxPay(payData request.WXPayData) {
+func (ws *WechatService) ApiCreateWxPay(payData request.WXPayData) (JSPayParam request.JSPayParam) {
 	if payData.UserId <= 0 || payData.PayId <= 0 {
 		return
 	}
 	orderInfo := ws.ApiCreateOrderData(payData)
-	ws.CreatJsApi(orderInfo)
+	JSPayParam = ws.CreatJsApi(orderInfo)
+	return JSPayParam
 }
 
 //CreatJsApi JSAPI下单
-func (ws *WechatService) CreatJsApi(orderInfo model.ZMOrder) {
-
+func (ws *WechatService) CreatJsApi(orderInfo model.ZMOrder) (JSPayParam request.JSPayParam) {
 	// 使用 utils 提供的函数从本地文件中加载商户私钥，商户私钥会用来生成请求的签名
 	mchPrivateKey, err := utils.LoadPrivateKeyWithPath("/data/web/market-api/run/wx_market_cert/apiclient_key.pem")
 	if err != nil {
@@ -118,7 +118,7 @@ func (ws *WechatService) CreatJsApi(orderInfo model.ZMOrder) {
 	var cPrice int64 = int64(orderInfo.CPrice)
 	svc := jsapi.JsapiApiService{Client: client}
 	// 得到prepay_id，以及调起支付所需的参数和签名
-	resp, result, err := svc.PrepayWithRequestPayment(ctx,
+	resp, _, err := svc.PrepayWithRequestPayment(ctx,
 		jsapi.PrepayRequest{
 			Appid:       core.String(AppId),
 			Mchid:       core.String(mchID),
@@ -134,48 +134,20 @@ func (ws *WechatService) CreatJsApi(orderInfo model.ZMOrder) {
 			},
 		},
 	)
-
 	if err == nil {
 		log.Println(resp)
-		log.Println(result)
+		JSPayParam.PrepayID = *resp.PrepayId
+		JSPayParam.Appid = *resp.Appid
+		JSPayParam.TimeStamp = *resp.TimeStamp
+		JSPayParam.NonceStr = *resp.NonceStr
+		JSPayParam.Package = *resp.Package
+		JSPayParam.SignType = *resp.SignType
+		JSPayParam.PaySign = *resp.PaySign
 	} else {
 		log.Println(err)
 	}
-	//url := "https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi"
-	//var param request.PayDataParams
-	//param.Mchid = "1672292970"
-	//param.Appid = "wx2afb8412b255e4fe"
-	//param.OutTradeNo = strconv.FormatInt(orderInfo.OrderId, 10)
-	//param.Description = orderInfo.Name
-	//param.NotifyURL = "https://market.58haha.com/api/wechat/pay/notice"
-	//param.Amount.Total = orderInfo.CPrice
-	//param.Amount.Currency = "CNY"
-	//param.Payer.Openid = orderInfo.OpenId
-	//
-	//marshal, err2 := json.Marshal(param)
-	//if err2 != nil {
-	//	return
-	//}
-	//jsonStr := []byte(marshal)
-	//fmt.Printf("%#v \n", string(jsonStr))
-	//req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonStr))
-	//
-	//req.Header.Set("Authorization", "")
-	//req.Header.Set("Accept", "application/json")
-	//req.Header.Set("Content-Type", "application/json")
-	//
-	//client := &http.Client{}
-	//resp, err := client.Do(req)
-	//if err != nil {
-	//	panic(err)
-	//}
-	//defer resp.Body.Close()
-	//
-	//// 解析响应
-	//fmt.Println("response Status:", resp.Status)
-	//fmt.Println("response Headers:", resp.Header)
-	//body, _ := ioutil.ReadAll(resp.Body)
-	//fmt.Println("response Body:", string(body))
+
+	return
 }
 
 //ApiCreateOrderData 生成订单信息

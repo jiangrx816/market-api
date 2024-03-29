@@ -52,3 +52,13 @@ type PayDataParams struct {
 		Openid string `json:"openid"`
 	} `json:"payer"`
 }
+
+type JSPayParam struct {
+	PrepayID  string `json:"PrepayId"`
+	Appid     string `json:"Appid"`
+	TimeStamp string `json:"TimeStamp"`
+	NonceStr  string `json:"NonceStr"`
+	Package   string `json:"Package"`
+	SignType  string `json:"SignType"`
+	PaySign   string `json:"PaySign"`
+}
