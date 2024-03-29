@@ -200,7 +200,6 @@ func (ins *IndexService) ApiGetMyTaskList(page, userId int) (taskLists []respons
 	offset := size * (page - 1)
 	var taskList []model.ZMTask
 	odb := global.GVA_DB.Model(&model.ZMTask{}).Debug()
-	odb = odb.Where("status >= 0")
 	if userId > 0 {
 		odb = odb.Where(" user_id = ?", userId)
 	}
