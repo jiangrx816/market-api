@@ -15,16 +15,18 @@ func (ZMBanner) TableName() string {
 
 // ZMOrder
 type ZMOrder struct {
-	Id        int   `json:"-"`
-	UserId    int64 `json:"user_id"`
-	OrderId   int64 `json:"order_id"`
-	Type      int   `json:"type"`
-	CPrice    int   `json:"c_price"`
-	OPrice    int   `json:"o_price"`
-	Number    int   `json:"number"`
-	NumberExt int   `json:"number_ext"`
-	Status    int   `json:"status"`
-	PayTime   int   `json:"pay_time"`
+	Id        int    `json:"-"`
+	Name      string `json:"name"`
+	OpenId    string `json:"open_id"`
+	UserId    int64  `json:"user_id"`
+	OrderId   int64  `json:"order_id"`
+	Type      int    `json:"type"`
+	CPrice    int    `json:"c_price"`
+	OPrice    int    `json:"o_price"`
+	Number    int    `json:"number"`
+	NumberExt int    `json:"number_ext"`
+	Status    int    `json:"status"`
+	PayTime   int    `json:"pay_time"`
 }
 
 // TableName ZMOrder 表名

@@ -52,8 +52,8 @@ func ApiGetWxPay(c *gin.Context) {
 		return
 	}
 	var service service.WechatService
-	data := service.ApiCreateWxPay(json)
+	service.ApiCreateWxPay(json)
 	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
-		"data": data,
+		"data": "",
 	}, global.SUCCESS_MSG, c)
 }

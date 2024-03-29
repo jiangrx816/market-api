@@ -37,3 +37,18 @@ type WXPayData struct {
 	UserId int `json:"user_id"`
 	PayId  int `json:"pay_id"`
 }
+
+type PayDataParams struct {
+	Mchid       string `json:"mchid"`
+	OutTradeNo  string `json:"out_trade_no"`
+	Appid       string `json:"appid"`
+	Description string `json:"description"`
+	NotifyURL   string `json:"notify_url"`
+	Amount      struct {
+		Total    int    `json:"total"`
+		Currency string `json:"currency"`
+	} `json:"amount"`
+	Payer struct {
+		Openid string `json:"open_id"`
+	} `json:"payer"`
+}
