@@ -235,7 +235,7 @@ func (ins *IndexService) ApiGetMyTaskList(page, userId int) (taskLists []respons
 
 		temp.Date = utils.GetUnixTimeToDateTime1(taskList[idx].AddTime)
 		temp.Address = taskList[idx].Address
-
+		temp.Status = taskList[idx].Status
 		taskLists = append(taskLists, temp)
 	}
 
