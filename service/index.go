@@ -102,7 +102,7 @@ func (ins *IndexService) ApiGetGoodMemberList(page, tType int) (memberLists []re
 		temp.Id = memberList[idx].Id
 		temp.UserId = memberList[idx].UserId
 		temp.OpenId = memberList[idx].OpenId
-		temp.NickName = memberList[idx].NickName
+		temp.NickName = utils.TruncateString(memberList[idx].NickName, 3)
 		temp.RealName = memberList[idx].RealName
 		temp.HeadUrl = memberList[idx].HeadUrl
 		temp.Mobile = memberList[idx].Mobile
