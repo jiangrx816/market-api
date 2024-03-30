@@ -16,6 +16,8 @@ func InitRouter() *gin.Engine {
 	{
 		//根据openId获取用户是否登录
 		api.GET("/getCheckLogin", app.ApiGetCheckLogin)
+		//根据userId获取用户附属信息
+		api.GET("/getUserExt", app.ApiGetUserExtInfo)
 		//上传文件
 		api.POST("/uploadFile", app.ApiUploadFileData)
 		//获取banner列表

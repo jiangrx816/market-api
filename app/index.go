@@ -10,6 +10,7 @@ import (
 	"market/utils"
 	"net/http"
 	"path/filepath"
+	"strconv"
 	"time"
 )
 
@@ -18,6 +19,16 @@ func ApiGetCheckLogin(c *gin.Context) {
 	openId := c.Query("open_id")
 	var service service.IndexService
 	info := service.ApiGetCheckLogin(openId)
+	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
+		"info": info,
+	}, global.SUCCESS_MSG, c)
+}
+
+//ApiGetUserExtInfo 根据userId获取用户附属信息
+func ApiGetUserExtInfo(c *gin.Context) {
+	userId, _ := strconv.Atoi(c.Query("user_id"))
+	var service service.IndexService
+	info := service.ApiGetUserExtInfo(userId)
 	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
 		"info": info,
 	}, global.SUCCESS_MSG, c)

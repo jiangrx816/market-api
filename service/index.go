@@ -22,6 +22,13 @@ func (ins *IndexService) ApiGetCheckLogin(openId string) (userInfo model.ZMUser)
 	return
 }
 
+//ApiGetUserExtInfo 根据userId获取用户附属信息
+func (ins *IndexService) ApiGetUserExtInfo(userId int) (userInfo model.ZMUserExt) {
+	db := global.GVA_DB.Model(&model.ZMUserExt{}).Debug()
+	db = db.Where("user_id = ?", userId).First(&userInfo)
+	return
+}
+
 //ApiGetBannerList 获取Banner的列表信息
 func (ins *IndexService) ApiGetBannerList() (bannerList []model.ZMBanner) {
 	bookDB := global.GVA_DB.Model(&model.ZMBanner{}).Debug()
