@@ -306,23 +306,36 @@ func (ws *WechatService) ApiDealUserPaySuccess(notifyReq *notify.Request, result
 				affected := obj.Update(&order).RowsAffected
 				//如果更新成功，才可以处理用户信息
 				if affected > 0 {
-					//处理用户信息--增加会员标识，标识有效期
-					var userTemp model.ZMUser
-					var user model.ZMUser
-					obu := global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id=? and open_id = ?", orderTemp.UserId, orderTemp.OpenId)
-					obu.Find(&userTemp)
-					//当前时间
-					currentYMD, _ := strconv.Atoi(help.GetCurrentDateYMD())
-					//判断用户是否存在有效期
-					var total int = orderTemp.Number + orderTemp.NumberExt
-					if userTemp.MemberLimit > 0 && userTemp.MemberLimit >= currentYMD {
-						user.MemberLimit = help.CalculateAfterDate(userTemp.MemberLimit, total) //会员截止日期
-					} else {
-						//已失效的会员有效期进行重置
-						user.MemberLimit = help.CalculateAfterDate(currentYMD, total) //会员截止日期
+					//根据订单类型进行业务处理-类型,1普通会员,2优选工匠,3积分兑换'
+					//处理普通会员业务逻辑
+					if orderTemp.Type == 1 {
+						//处理用户信息--增加会员标识，标识有效期
+						var userTemp model.ZMUser
+						var user model.ZMUser
+						obu := global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id=? and open_id = ?", orderTemp.UserId, orderTemp.OpenId)
+						obu.Find(&userTemp)
+						//当前时间
+						currentYMD, _ := strconv.Atoi(help.GetCurrentDateYMD())
+						//判断用户是否存在有效期
+						var total int = orderTemp.Number + orderTemp.NumberExt
+						if userTemp.MemberLimit > 0 && userTemp.MemberLimit >= currentYMD {
+							user.MemberLimit = help.CalculateAfterDate(userTemp.MemberLimit, total) //会员截止日期
+						} else {
+							//已失效的会员有效期进行重置
+							user.MemberLimit = help.CalculateAfterDate(currentYMD, total) //会员截止日期
+						}
+						user.IsMember = 1 //标记为会员
+						obu.Update(&user)
 					}
-					user.IsMember = 1 //标记为会员
-					obu.Update(&user)
+					//处理优选工匠业务逻辑
+					if orderTemp.Type == 2 {
+						//处理用户信息--增加会员标识，标识有效期
+						var userTemp model.ZMUser
+						obu := global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id=? and open_id = ?", orderTemp.UserId, orderTemp.OpenId)
+						userTemp.IsBest = 1
+						userTemp.LastTime = help.GetCurrentUnixTimestamp()
+						obu.Find(&userTemp)
+					}
 				}
 			}
 		}
