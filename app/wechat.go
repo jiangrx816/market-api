@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"market/common"
 	"market/common/request"
@@ -55,5 +56,21 @@ func ApiGetWxPay(c *gin.Context) {
 	data := service.ApiCreateWxPay(json)
 	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
 		"data": data,
+	}, global.SUCCESS_MSG, c)
+}
+
+//ApiGetWxPayCallback 微信支付通知
+func ApiGetWxPayCallback(c *gin.Context) {
+	var json request.WechatPayCallback
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	fmt.Printf("回调接收的参数:%#v \n", json)
+	//var service service.WechatService
+	//data := service.ApiCreateWxPay(json)
+	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
+		"data": json,
 	}, global.SUCCESS_MSG, c)
 }
