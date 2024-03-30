@@ -333,6 +333,9 @@ func (ws *WechatService) ApiDealUserPaySuccess(notifyReq *notify.Request, result
 						var userTemp model.ZMUser
 						obu := global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id=? and open_id = ?", orderTemp.UserId, orderTemp.OpenId)
 						userTemp.IsBest = 1
+						//当前时间
+						currentYMD, _ := strconv.Atoi(help.GetCurrentDateYMD())
+						userTemp.BestLimit = help.CalculateAfterDate(currentYMD, 365)
 						userTemp.LastTime = help.GetCurrentUnixTimestamp()
 						obu.Update(&userTemp)
 					}
