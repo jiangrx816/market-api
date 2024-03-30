@@ -297,6 +297,8 @@ func (ws *WechatService) ApiDealUserPaySuccess(notifyReq *notify.Request, result
 			var orderTemp model.ZMOrder
 			ob := global.GVA_DB.Model(&model.ZMOrder{}).Debug().Where("order_id=?", orderId)
 			ob.Find(&orderTemp)
+			fmt.Printf("根据回调的订单id查询订单信息:%#v \n", orderTemp)
+			fmt.Printf("订单的类型:%#v \n", orderTemp.Type)
 			//判断是否为已支付状态,只有是未支付成功的状态才可操作
 			if orderTemp.Id > 0 && orderTemp.Status == 0 {
 				var order model.ZMOrder
@@ -309,6 +311,7 @@ func (ws *WechatService) ApiDealUserPaySuccess(notifyReq *notify.Request, result
 					//根据订单类型进行业务处理-类型,1普通会员,2优选工匠,3积分兑换'
 					//处理普通会员业务逻辑
 					if orderTemp.Type == 1 {
+						fmt.Printf("执行到普通会员的业务逻辑:%#v \n", orderTemp.Type)
 						//处理用户信息--增加会员标识，标识有效期
 						var userTemp model.ZMUser
 						var user model.ZMUser
@@ -329,6 +332,7 @@ func (ws *WechatService) ApiDealUserPaySuccess(notifyReq *notify.Request, result
 					}
 					//处理优选工匠业务逻辑
 					if orderTemp.Type == 2 {
+						fmt.Printf("执行到优选工匠的的业务逻辑:%#v \n", orderTemp.Type)
 						//处理用户信息--增加会员标识，标识有效期
 						var userTemp model.ZMUser
 						obu := global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id=? and open_id = ?", orderTemp.UserId, orderTemp.OpenId)
