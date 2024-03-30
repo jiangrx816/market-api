@@ -19,6 +19,13 @@ type IndexService struct {
 func (ins *IndexService) ApiGetCheckLogin(openId string) (userInfo model.ZMUser) {
 	db := global.GVA_DB.Model(&model.ZMUser{}).Debug()
 	db = db.Where("status=1 AND open_id = ?", openId).First(&userInfo)
+	if userInfo.IsBest == 1 {
+		//当前时间
+		currentYMD, _ := strconv.Atoi(utils.GetCurrentDateYMD())
+		if currentYMD > userInfo.BestLimit {
+			userInfo.IsBest = 0
+		}
+	}
 	return
 }
 
