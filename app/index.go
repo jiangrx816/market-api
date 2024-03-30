@@ -183,29 +183,11 @@ func ApiUploadFileData(c *gin.Context) {
 	// 保存文件到服务器
 	c.SaveUploadedFile(file, filepath.Join(path, fName))
 
-
 	dst := "https://oss.58haha.com/market/" + fName
 
-		c.JSON(200, gin.H{
-			"dst": dst,
-		})
-	////存放的业务目录
-	//file, err := c.FormFile("file")
-	//
-	//if err == nil {
-	//	Path := "/data/static/market"
-	//	dst := path.Join(Path, file.Filename)
-	//	fmt.Printf("file.Filename:%s \n", file.Filename)
-	//	fmt.Printf("dst:%s \n", dst)
-	//	c.SaveUploadedFile(file, dst)
-	//	dst = strings.Replace(dst, Path, "https://oss.58haha.com/market", 1)
-	//	fmt.Printf("dst:%s \n", dst)
-	//	c.JSON(200, gin.H{
-	//		"dst": dst,
-	//	})
-	//} else {
-	//	common.ReturnResponse(global.FAIL, map[string]interface{}{}, global.FAIL_MSG, c)
-	//}
+	c.JSON(200, gin.H{
+		"dst": dst,
+	})
 }
 
 //ApiDoMakeUserData 创建用户
@@ -215,10 +197,7 @@ func ApiDoMakeUserData(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 	var service service.IndexService
-
-	log.Println(json)
 	res := service.ApiDoMakeUserData(json)
 	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
 		"result": res,

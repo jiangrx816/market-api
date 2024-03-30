@@ -353,6 +353,13 @@ func (ins *IndexService) ApiDoMakeUserData(userData request.MakeUserData) (resul
 	if userData.Type < 0 || userData.Mobile == "" || userData.OpenId == "" {
 		return
 	}
+	//判断用户的openID是否存在
+	var userTemp model.ZMUser
+	global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("open_id=?",userData.OpenId).First(&userTemp)
+	if userTemp.UserId > 0 {
+		return true
+	}
+
 	var user model.ZMUser
 	odb := global.GVA_DB.Model(&model.ZMUser{}).Debug()
 	var userIdTemp = utils.GetCurrentUnixTimestamp()

@@ -6,10 +6,10 @@ import (
 )
 
 const (
-	DEFAULT_LAYOUT_DATE_TIME = "2006-01-02 15:04:05"
+	DEFAULT_LAYOUT_DATE_TIME   = "2006-01-02 15:04:05"
 	DEFAULT_LAYOUT_DATE_TIME_1 = "2006-01-02 15:04"
-	DEFAULT_LAYOUT_DATE      = "2006-01-02"
-	DEFAULT_LAYOUT_DATE_YMD  = "20060102"
+	DEFAULT_LAYOUT_DATE        = "2006-01-02"
+	DEFAULT_LAYOUT_DATE_YMD    = "20060102"
 )
 
 // GetCurrentDateTime 获取当前日期时间
@@ -34,6 +34,19 @@ func GetCurrentDateYMD() (dateTime string) {
 func GetCurrentUnixTimestamp() (timestamp int64) {
 	timestamp = time.Now().Unix()
 	return
+}
+
+// GetCurrentMilliseconds 获取当前的时间戳-毫秒
+func GetCurrentMilliseconds() (timestamp int64) {
+	// 获取当前时间
+	now := time.Now()
+	// 转换为Unix时间戳，单位为秒
+	seconds := now.Unix()
+	// 转换为毫秒时间戳
+	milliseconds := seconds * 1000
+	// 加上当前时间的纳秒部分，转换为毫秒
+	milliseconds += int64(now.Nanosecond()) / 1e6
+	return milliseconds
 }
 
 // GetDateToUnixTimestamp 日期时间格式转换成秒时间戳

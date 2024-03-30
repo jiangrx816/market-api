@@ -160,7 +160,7 @@ func (ws *WechatService) ApiCreateOrderData(payData request.WXPayData) (orderInf
 	var payItem model.ZMPay
 	global.GVA_DB.Model(&model.ZMPay{}).Debug().Where("id=?", payData.PayId).First(&payItem)
 
-	tempOrderId := help.GetCurrentUnixTimestamp()
+	tempOrderId := help.GetCurrentMilliseconds()
 	var order model.ZMOrder
 	odb := global.GVA_DB.Model(&model.ZMOrder{}).Debug()
 	order.Name = payItem.Name
