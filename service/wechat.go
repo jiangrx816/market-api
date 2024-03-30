@@ -19,20 +19,13 @@ import (
 	"strconv"
 )
 
-var (
-	mchID                      string = "1672292970"                               // 商户号
-	mchCertificateSerialNumber string = "68D1E3F07BDE46784AA92001078FFF65323AE5C4" // 商户证书序列号
-	mchAPIv3Key                string = "wzs920516371526000adf789cdfh9090"         // 商户APIv3密钥
-)
-
-var AppId string = "wx2afb8412b255e4fe"
-
 type WechatService struct {
 }
 
 //ApiGetWechatData 根据code换取 openId, sessionKey, unionId
 func (ws *WechatService) ApiGetWechatData(code string) (wxInfo string) {
-	urlFormat := fmt.Sprintf("https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", global.AppId, global.AppSecret, code)
+	wechatConf := global.GVA_CONFIG.Wechat
+	urlFormat := fmt.Sprintf("https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type=authorization_code", wechatConf.AppId, wechatConf.Secret, code)
 	if request, err := help.SendGetRequest(urlFormat); err == nil {
 		wxInfo = string(request)
 	}
@@ -41,7 +34,8 @@ func (ws *WechatService) ApiGetWechatData(code string) (wxInfo string) {
 
 //ApiGetWxAccessToken 获取access_token
 func (ws *WechatService) ApiGetWxAccessToken() (wxInfo string) {
-	urlFormat := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", global.AppId, global.AppSecret)
+	wechatConf := global.GVA_CONFIG.Wechat
+	urlFormat := fmt.Sprintf("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=%s&secret=%s", wechatConf.AppId, wechatConf.Secret)
 	if request, err := help.SendGetRequest(urlFormat); err == nil {
 		wxInfo = string(request)
 	}
@@ -92,6 +86,7 @@ func (ws *WechatService) ApiCreateWxPay(payData request.WXPayData) (JSPayParam r
 
 //CreatJsApi JSAPI下单
 func (ws *WechatService) CreatJsApi(orderInfo model.ZMOrder) (JSPayParam request.JSPayParam) {
+	wechatConf := global.GVA_CONFIG.Wechat
 	// 使用 utils 提供的函数从本地文件中加载商户私钥，商户私钥会用来生成请求的签名
 	mchPrivateKey, err := utils.LoadPrivateKeyWithPath("/data/web/market-api/run/wx_market_cert/apiclient_key.pem")
 	if err != nil {
@@ -101,18 +96,12 @@ func (ws *WechatService) CreatJsApi(orderInfo model.ZMOrder) (JSPayParam request
 	ctx := context.Background()
 	// 使用商户私钥等初始化 client，并使它具有自动定时获取微信支付平台证书的能力
 	opts := []core.ClientOption{
-		option.WithWechatPayAutoAuthCipher(mchID, mchCertificateSerialNumber, mchPrivateKey, mchAPIv3Key),
+		option.WithWechatPayAutoAuthCipher(wechatConf.MchId, wechatConf.MchCert, mchPrivateKey, wechatConf.MchIv3),
 	}
 	client, err := core.NewClient(ctx, opts...)
 	if err != nil {
 		log.Fatalf("new wechat pay client err:%s", err)
 	}
-
-	// 发送请求，以下载微信支付平台证书为例
-	// https://pay.weixin.qq.com/wiki/doc/apiv3/wechatpay/wechatpay5_1.shtml
-	//svc := certificates.CertificatesApiService{Client: client}
-	//resp, result, err := svc.DownloadCertificates(ctx)
-	//log.Printf("status=%d resp=%s", result.Response.StatusCode, resp)
 
 	description := "千皓优选（" + orderInfo.Name + "）"
 	var cPrice int64 = int64(orderInfo.CPrice)
@@ -120,8 +109,8 @@ func (ws *WechatService) CreatJsApi(orderInfo model.ZMOrder) (JSPayParam request
 	// 得到prepay_id，以及调起支付所需的参数和签名
 	resp, _, err := svc.PrepayWithRequestPayment(ctx,
 		jsapi.PrepayRequest{
-			Appid:       core.String(AppId),
-			Mchid:       core.String(mchID),
+			Appid:       core.String(wechatConf.AppId),
+			Mchid:       core.String(wechatConf.MchId),
 			Description: core.String(description),
 			OutTradeNo:  core.String(strconv.FormatInt(orderInfo.OrderId, 10)),
 			Attach:      core.String("千皓优选用工好选择"),

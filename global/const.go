@@ -12,8 +12,6 @@ const QUEUE_LEN = 3
 const DEFAULT_QUEUE = "queue_list_question"
 const QUEUE = "queue_list_question_%d"
 const AUTH_TOKEN = "wechat"
-const AppId = "wx2afb8412b255e4fe"
-const AppSecret = "82c58b3027d4e09230a06f8132b04577"
 
 const (
 	SUCCESS                = 10000
