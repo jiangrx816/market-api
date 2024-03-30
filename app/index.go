@@ -50,6 +50,15 @@ func ApiGetPayList(c *gin.Context) {
 	}, global.SUCCESS_MSG, c)
 }
 
+//ApiGetGoodPay 获取优选工匠的价格
+func ApiGetGoodPay(c *gin.Context) {
+	var service service.IndexService
+	info := service.ApiGetGoodPay()
+	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
+		"info": info,
+	}, global.SUCCESS_MSG, c)
+}
+
 //ApiGetGoodMemberList 获取优选工匠列表
 func ApiGetGoodMemberList(c *gin.Context) {
 	page := utils.GetIntParamItem("page", 10, c)

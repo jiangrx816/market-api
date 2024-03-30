@@ -59,6 +59,18 @@ func (ins *IndexService) ApiGetPayList() (payListData []response.FormatData) {
 	return payListData
 }
 
+//ApiGetGoodPay 获取优选工匠的价格
+func (ins *IndexService) ApiGetGoodPay() (info model.ZMPay) {
+	var payList []model.ZMPay
+	odb := global.GVA_DB.Model(&model.ZMPay{}).Debug()
+	odb = odb.Where("type=2 and status=1").Order("sort desc").Limit(1)
+	odb.Find(&payList)
+	if len(payList) > 0 {
+		info = payList[0]
+	}
+	return
+}
+
 //ApiGetGoodMemberList 获取优选工匠列表
 func (ins *IndexService) ApiGetGoodMemberList(page, tType int) (memberLists []response.MemberData, count int64) {
 	tagDataList := ins.GetTagList()
@@ -355,7 +367,7 @@ func (ins *IndexService) ApiDoMakeUserData(userData request.MakeUserData) (resul
 	}
 	//判断用户的openID是否存在
 	var userTemp model.ZMUser
-	global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("open_id=?",userData.OpenId).First(&userTemp)
+	global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("open_id=?", userData.OpenId).First(&userTemp)
 	if userTemp.UserId > 0 {
 		return true
 	}
