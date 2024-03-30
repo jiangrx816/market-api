@@ -94,6 +94,7 @@ type ZMUser struct {
 	TagId       int    `json:"tag_id"`
 	ParentId    int    `json:"parent_id"`
 	IsBest      int    `json:"is_best"`
+	BestLimit   int    `json:"best_limit"`
 	IsMember    int    `json:"is_member"`
 	MemberLimit int    `json:"member_limit"`
 	Type        int    `json:"type"`
