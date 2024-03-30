@@ -4,5 +4,5 @@
 .fleet
 logs/*
 tmp/*
-config.yaml
-./config.yaml
+*.yaml
+*.yml
