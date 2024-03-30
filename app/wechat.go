@@ -1,6 +1,7 @@
 package app
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"market/common"
@@ -61,16 +62,28 @@ func ApiGetWxPay(c *gin.Context) {
 
 //ApiGetWxPayCallback 微信支付通知
 func ApiGetWxPayCallback(c *gin.Context) {
-	var json request.WechatPayCallback
-	if err := c.ShouldBindJSON(&json); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	//var json request.WechatPayCallback
+	//if err := c.ShouldBindJSON(&json); err != nil {
+	//	c.JSON(http.StatusOK, gin.H{"code": "FAIL", "message": json, "error": err.Error()})
+	//	return
+	//}
+	var service service.WechatService
+	notifyReq, err := service.ApiDealWxPayCallback(c)
+	if err != nil {
+		//c.JSON(http.StatusOK, gin.H{"code": "FAIL", "message": err.Error()})
 		return
 	}
+	//解析Plaintext参数，这里面可以拿到订单的基本信息
+	var data = []byte(notifyReq.Resource.Plaintext)
+	var result map[string]interface{}
+	err = json.Unmarshal(data, &result)
+	if err != nil {
+		fmt.Println("JSON转换失败：", err)
+		return
+	}
+	// 处理通知内容
+	fmt.Println("解密结果", notifyReq)
+	fmt.Println("解密结果Plaintext", result)
 
-	fmt.Printf("回调接收的参数:%#v \n", json)
-	//var service service.WechatService
-	//data := service.ApiCreateWxPay(json)
-	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
-		"data": json,
-	}, global.SUCCESS_MSG, c)
+	c.JSON(http.StatusOK, gin.H{"code": "SUCCESS"})
 }

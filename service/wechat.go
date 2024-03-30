@@ -5,8 +5,13 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/wechatpay-apiv3/wechatpay-go/core"
+	"github.com/wechatpay-apiv3/wechatpay-go/core/auth/verifiers"
+	"github.com/wechatpay-apiv3/wechatpay-go/core/downloader"
+	"github.com/wechatpay-apiv3/wechatpay-go/core/notify"
 	"github.com/wechatpay-apiv3/wechatpay-go/core/option"
+	"github.com/wechatpay-apiv3/wechatpay-go/services/payments"
 	"github.com/wechatpay-apiv3/wechatpay-go/services/payments/jsapi"
 	"github.com/wechatpay-apiv3/wechatpay-go/utils"
 	"io/ioutil"
@@ -167,4 +172,44 @@ func (ws *WechatService) ApiCreateOrderData(payData request.WXPayData) (orderInf
 		orderInfo = order
 	}
 	return
+}
+
+//ApiDealWxPayCallback 微信支付成功毁掉处理
+func (ws *WechatService)ApiDealWxPayCallback(c *gin.Context) (notifyReq *notify.Request, err error) {
+	ctx := c             //这个参数是context.Background()
+	request := c.Request //这个值是*http.Request
+	// 使用 utils 提供的函数从本地文件中加载商户私钥，商户私钥会用来生成请求的签名
+	mchPrivateKey, err := utils.LoadPrivateKeyWithPath("/data/web/market-api/run/wx_market_cert/apiclient_key.pem")
+	if err != nil {
+		log.Println("load merchant private key error")
+		return nil, err
+	}
+
+	wechatConf := global.GVA_CONFIG.Wechat
+	// 1. 使用 `RegisterDownloaderWithPrivateKey` 注册下载器
+	err = downloader.MgrInstance().RegisterDownloaderWithPrivateKey(ctx, mchPrivateKey, wechatConf.MchCert, wechatConf.MchId, wechatConf.MchIv3)
+	if err != nil {
+		return nil, err
+	}
+	// 2. 获取商户号对应的微信支付平台证书访问器
+	certificateVisitor := downloader.MgrInstance().GetCertificateVisitor(wechatConf.MchId)
+	// 3. 使用证书访问器初始化 `notify.Handler`
+	handler := notify.NewNotifyHandler(wechatConf.MchIv3, verifiers.NewSHA256WithRSAVerifier(certificateVisitor))
+
+	transaction := new(payments.Transaction)
+	notifyReq, err = handler.ParseNotifyRequest(ctx, request, transaction)
+	// 如果验签未通过，或者解密失败
+	if err != nil {
+		fmt.Println(err)
+		//return
+	}
+	// 处理通知内容
+	fmt.Println(notifyReq.Summary)
+	fmt.Println(transaction.TransactionId)
+	// 如果验签未通过，或者解密失败
+	if err != nil {
+		return nil, err
+	}
+
+	return notifyReq, nil
 }

@@ -9,6 +9,7 @@ require (
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/jinzhu/gorm v1.9.16
 	github.com/robfig/cron v1.2.0
+	github.com/wechatpay-apiv3/wechatpay-go v0.2.18
 	go.uber.org/zap v1.26.0
 	golang.org/x/sync v0.5.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -36,7 +37,6 @@ require (
 	github.com/pelletier/go-toml/v2 v2.0.8 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
-	github.com/wechatpay-apiv3/wechatpay-go v0.2.18 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
 	golang.org/x/arch v0.3.0 // indirect
 	golang.org/x/crypto v0.9.0 // indirect
