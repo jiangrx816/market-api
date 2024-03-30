@@ -59,6 +59,8 @@ func InitRouter() *gin.Engine {
 		apiWxApi.POST("/getWxUserPhoneNumber", app.ApiGetWxUserPhoneNumber)
 		//微信支付
 		apiWxApi.POST("/pay", app.ApiGetWxPay)
+		//微信开通优选工匠
+		apiWxApi.POST("/open/pay", app.ApiGetWxOpenPay)
 		//微信支付回调
 		apiWxApi.POST("/pay/notice", app.ApiGetWxPayCallback)
 	}

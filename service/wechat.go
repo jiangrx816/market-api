@@ -84,9 +84,81 @@ func (ws *WechatService) ApiCreateWxPay(payData request.WXPayData) (JSPayParam r
 	if payData.UserId <= 0 || payData.PayId <= 0 {
 		return
 	}
-	orderInfo := ws.ApiCreateOrderData(payData)
+	//创建订单
+	orderInfo := ws.ApiCreateOrderData(payData, 1)
+	//创建JSPay订单参数
 	JSPayParam = ws.CreatJsApi(orderInfo)
 	return JSPayParam
+}
+
+//ApiGetWxPay 创建订单
+func (ws *WechatService) ApiGetWxOpenPay(openData request.OpenGoodPay) (JSPayParam request.JSPayParam) {
+	//验证数据
+	if openData.UserID < 0 || openData.PayId <= 0 || openData.OpenID == "" || openData.UserImage == "" || openData.UserArea == "" || openData.NickName == "" || openData.UserSelf == "" || openData.TagID <= 0 || openData.IsAgree <= 0 {
+		return
+	}
+	//开通优选工匠的前置业务处理
+	res := ws.OpenPayPreCreatData(openData)
+	if res == true {
+		//创建订单
+		var payData request.WXPayData
+		payData.UserId = openData.UserID
+		payData.PayId = openData.PayId
+		orderInfo := ws.ApiCreateOrderData(payData, 2)
+		//创建JSPay订单参数
+		JSPayParam = ws.CreatJsApi(orderInfo)
+	}
+	return JSPayParam
+}
+
+//OpenPayPreCreatData 开通优选工匠的前置业务处理
+func (ws *WechatService) OpenPayPreCreatData(openData request.OpenGoodPay) (result bool) {
+	//根据用户id查询用户信息
+	var userInfo model.ZMUser
+	global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id=?", openData.UserID).First(&userInfo)
+	if userInfo.Id <= 0 {
+		return
+	}
+	var lastTime int64 = help.GetCurrentUnixTimestamp()
+	var userTemp model.ZMUser
+	userTemp.NickName = openData.NickName
+	userTemp.RealName = openData.NickName
+	userTemp.HeadUrl = openData.UserImage
+	userTemp.TagId = openData.TagID
+	userTemp.LastTime = lastTime
+	obj := global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id=?", openData.UserID)
+	affected := obj.Update(&userTemp).RowsAffected
+	//如果更新成功，才可以处理用户附属信息
+	if affected > 0 {
+		//查询是否存在用户的附属信息
+		var userExtInfo model.ZMUserExt
+		global.GVA_DB.Model(&model.ZMUserExt{}).Debug().Where("user_id=?", openData.UserID).First(&userExtInfo)
+		var userExtCreateData model.ZMUserExt
+		userExtCreateData.UserId = int64(openData.UserID)
+		userExtCreateData.Address = openData.UserArea
+		userExtCreateData.Desc = openData.UserSelf
+		if len(openData.UserCase) > 0 {
+			caseInfo, _ := json.Marshal(openData.UserCase)
+			userExtCreateData.Demo = string(caseInfo)
+		}
+		userExtCreateData.IsAgree = openData.IsAgree
+		userExtCreateData.LastTime = lastTime
+		if userExtInfo.Id > 0 {
+			//更新操作
+			affected2 := global.GVA_DB.Model(&model.ZMUserExt{}).Debug().Where("user_id=?", openData.UserID).Update(&userExtCreateData).RowsAffected
+			if affected2 > 0 {
+				result = true
+			}
+		} else {
+			//添加操作
+			affected1 := global.GVA_DB.Model(&model.ZMUserExt{}).Debug().Create(&userExtCreateData).RowsAffected
+			if affected1 > 0 {
+				result = true
+			}
+		}
+	}
+
+	return
 }
 
 //CreatJsApi JSAPI下单
@@ -145,7 +217,7 @@ func (ws *WechatService) CreatJsApi(orderInfo model.ZMOrder) (JSPayParam request
 }
 
 //ApiCreateOrderData 生成订单信息
-func (ws *WechatService) ApiCreateOrderData(payData request.WXPayData) (orderInfo model.ZMOrder) {
+func (ws *WechatService) ApiCreateOrderData(payData request.WXPayData, orderType int) (orderInfo model.ZMOrder) {
 	//根据用户id查询用户信息
 	var userInfo model.ZMUser
 	global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id=?", payData.UserId).First(&userInfo)
@@ -161,7 +233,7 @@ func (ws *WechatService) ApiCreateOrderData(payData request.WXPayData) (orderInf
 	order.OpenId = userInfo.OpenId
 	order.UserId = userInfo.UserId
 	order.OrderId = tempOrderId
-	order.Type = 1 //1普通会员,2优选工匠,3积分兑换
+	order.Type = orderType //1普通会员,2优选工匠, 3积分兑换
 	order.CPrice = payItem.CPrice
 	order.OPrice = payItem.OPrice
 	order.Number = payItem.Number

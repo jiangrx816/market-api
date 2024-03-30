@@ -97,6 +97,7 @@ type ZMUser struct {
 	IsMember    int    `json:"is_member"`
 	MemberLimit int    `json:"member_limit"`
 	Type        int    `json:"type"`
+	LastTime    int64  `json:"last_time"`
 }
 
 // ZMUser ZMUser 表名
@@ -108,12 +109,12 @@ func (ZMUser) TableName() string {
 type ZMUserExt struct {
 	Id        int    `json:"-"`
 	UserId    int64  `json:"user_id"`
-	TagId     int    `json:"tag_id"`
 	Address   string `json:"address"`
 	Desc      string `json:"desc"`
 	Demo      string `json:"demo"`
 	IsAgree   int    `json:"is_agree"`
 	ViewCount int    `json:"view_count"`
+	LastTime  int64  `json:"last_time"`
 }
 
 // ZMUserExt ZMUserExt 表名

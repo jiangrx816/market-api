@@ -60,6 +60,20 @@ func ApiGetWxPay(c *gin.Context) {
 	}, global.SUCCESS_MSG, c)
 }
 
+//ApiGetWxOpenPay 微信开通优选工匠
+func ApiGetWxOpenPay(c *gin.Context) {
+	var json request.OpenGoodPay
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	var service service.WechatService
+	data := service.ApiGetWxOpenPay(json)
+	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
+		"data": data,
+	}, global.SUCCESS_MSG, c)
+}
+
 //ApiGetWxPayCallback 微信支付通知
 func ApiGetWxPayCallback(c *gin.Context) {
 	var service service.WechatService

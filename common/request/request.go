@@ -79,3 +79,16 @@ type WechatPayCallback struct {
 		Nonce          string `json:"nonce"`
 	} `json:"resource"`
 }
+
+type OpenGoodPay struct {
+	UserID    int      `json:"user_id"`
+	OpenID    string   `json:"open_id"`
+	UserImage string   `json:"user_image"`
+	UserArea  string   `json:"user_area"`
+	NickName  string   `json:"nick_name"`
+	UserSelf  string   `json:"user_self"`
+	TagID     int      `json:"tag_id"`
+	PayId     int      `json:"pay_id"`
+	IsAgree   int      `json:"is_agree"`
+	UserCase  []string `json:"user_case"`
+}
