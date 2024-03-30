@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"fmt"
 	"log"
+	"strconv"
 	"time"
 )
 
@@ -27,6 +29,23 @@ func GetCurrentDate() (dateTime string) {
 // GetCurrentDateYMD 获取当前日期YMD
 func GetCurrentDateYMD() (dateTime string) {
 	dateTime = time.Now().Format(DEFAULT_LAYOUT_DATE_YMD)
+	return
+}
+
+//CalculateAfterDate 几天后的日期
+func CalculateAfterDate(dateInt int, days int) (result int) {
+	// 待处理的日期字符串
+	dateStr := strconv.Itoa(dateInt)
+	// 解析日期字符串
+	date, err := time.Parse(DEFAULT_LAYOUT_DATE_YMD, dateStr)
+	if err != nil {
+		fmt.Println("日期解析错误:", err)
+		return
+	}
+	// 增加7天
+	sevenDaysLater := date.AddDate(0, 0, days)
+	// 格式化为指定格式
+	result, _ = strconv.Atoi(sevenDaysLater.Format(DEFAULT_LAYOUT_DATE_YMD))
 	return
 }
 

@@ -62,15 +62,10 @@ func ApiGetWxPay(c *gin.Context) {
 
 //ApiGetWxPayCallback 微信支付通知
 func ApiGetWxPayCallback(c *gin.Context) {
-	//var json request.WechatPayCallback
-	//if err := c.ShouldBindJSON(&json); err != nil {
-	//	c.JSON(http.StatusOK, gin.H{"code": "FAIL", "message": json, "error": err.Error()})
-	//	return
-	//}
 	var service service.WechatService
 	notifyReq, err := service.ApiDealWxPayCallback(c)
 	if err != nil {
-		//c.JSON(http.StatusOK, gin.H{"code": "FAIL", "message": err.Error()})
+		c.JSON(http.StatusOK, gin.H{"code": "FAIL", "message": err.Error()})
 		return
 	}
 	//解析Plaintext参数，这里面可以拿到订单的基本信息
@@ -85,5 +80,7 @@ func ApiGetWxPayCallback(c *gin.Context) {
 	fmt.Println("解密结果", notifyReq)
 	fmt.Println("解密结果Plaintext", result)
 
+	//将解密结果进行处理
+	service.ApiDealUserPaySuccess(notifyReq, result)
 	c.JSON(http.StatusOK, gin.H{"code": "SUCCESS"})
 }

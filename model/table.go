@@ -26,7 +26,7 @@ type ZMOrder struct {
 	Number    int    `json:"number"`
 	NumberExt int    `json:"number_ext"`
 	Status    int    `json:"status"`
-	PayTime   int    `json:"pay_time"`
+	PayTime   string `json:"pay_time"`
 }
 
 // TableName ZMOrder 表名

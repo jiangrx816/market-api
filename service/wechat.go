@@ -175,7 +175,7 @@ func (ws *WechatService) ApiCreateOrderData(payData request.WXPayData) (orderInf
 }
 
 //ApiDealWxPayCallback 微信支付成功毁掉处理
-func (ws *WechatService)ApiDealWxPayCallback(c *gin.Context) (notifyReq *notify.Request, err error) {
+func (ws *WechatService) ApiDealWxPayCallback(c *gin.Context) (notifyReq *notify.Request, err error) {
 	ctx := c             //这个参数是context.Background()
 	request := c.Request //这个值是*http.Request
 	// 使用 utils 提供的函数从本地文件中加载商户私钥，商户私钥会用来生成请求的签名
@@ -212,4 +212,47 @@ func (ws *WechatService)ApiDealWxPayCallback(c *gin.Context) (notifyReq *notify.
 	}
 
 	return notifyReq, nil
+}
+
+//ApiDealUserPaySuccess 将解密结果进行处理
+func (ws *WechatService) ApiDealUserPaySuccess(notifyReq *notify.Request, result map[string]interface{}) {
+	//判断是否支付成功
+	if notifyReq.EventType == "TRANSACTION.SUCCESS" && notifyReq.ResourceType == "encrypt-resource" {
+		//支付成功处理订单状态
+		if orderId, ok := result["out_trade_no"]; ok {
+			fmt.Println("订单id 存在，值为：", orderId)
+			//处理订单信息--更新订单的支付时间，支付状态
+			var orderTemp model.ZMOrder
+			ob := global.GVA_DB.Model(&model.ZMOrder{}).Debug().Where("order_id=?", orderId)
+			ob.Find(&orderTemp)
+			//判断是否为已支付状态,只有是未支付成功的状态才可操作
+			if orderTemp.Id > 0 && orderTemp.Status == 0 {
+				var order model.ZMOrder
+				order.Status = 1 //支付完成
+				order.PayTime = help.GetCurrentDateTime()
+				obj := global.GVA_DB.Model(&model.ZMOrder{}).Debug().Where("order_id=?", orderId)
+				affected := obj.Update(&order).RowsAffected
+				//如果更新成功，才可以处理用户信息
+				if affected > 0 {
+					//处理用户信息--增加会员标识，标识有效期
+					var userTemp model.ZMUser
+					var user model.ZMUser
+					obu := global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id=? and open_id = ?", orderTemp.UserId, orderTemp.OpenId)
+					obu.Find(&userTemp)
+					//当前时间
+					currentYMD, _ := strconv.Atoi(help.GetCurrentDateYMD())
+					//判断用户是否存在有效期
+					var total int = orderTemp.Number + orderTemp.NumberExt
+					if userTemp.MemberLimit > 0 && userTemp.MemberLimit >= currentYMD {
+						user.MemberLimit = help.CalculateAfterDate(userTemp.MemberLimit, total) //会员截止日期
+					} else {
+						//已失效的会员有效期进行重置
+						user.MemberLimit = help.CalculateAfterDate(currentYMD, total) //会员截止日期
+					}
+					user.IsMember = 1 //标记为会员
+					obu.Update(&user)
+				}
+			}
+		}
+	}
 }
