@@ -330,6 +330,16 @@ func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (resul
 	if taskData.Title == "" || taskData.TaskDesc == "" || taskData.Address == "" || taskData.TagId == 0 || taskData.UserId == 0 {
 		return
 	}
+
+	//判断用户发的次数，5分钟设置最大3次
+	cacheCount := fmt.Sprintf("request_count:%d", taskData.UserId)
+	count, _ := global.GVA_REDIS.Get(context.Background(), cacheCount).Result()
+	countInt, _ := strconv.Atoi(count)
+	fmt.Println(countInt)
+	if countInt >= 3 {
+		return false
+	}
+
 	var task model.ZMTask
 	odb := global.GVA_DB.Model(&model.ZMTask{}).Debug()
 	task.TagId = taskData.TagId
@@ -343,6 +353,11 @@ func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (resul
 	affected := odb.Create(&task).RowsAffected
 	if affected > 0 {
 		result = true
+		//键值增加1
+		global.GVA_REDIS.Incr(context.Background(), cacheCount).Result()
+		//设置5分钟的有效期
+		global.GVA_REDIS.Expire(context.Background(), cacheCount, time.Duration(300)*time.Second)
+		//单独的防止连续点击
 		global.GVA_REDIS.SetNX(context.Background(), fmt.Sprintf("userPushTask_%d", task.UserId), 1, time.Duration(3)*time.Second)
 	}
 	return
