@@ -343,7 +343,7 @@ func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (resul
 	affected := odb.Create(&task).RowsAffected
 	if affected > 0 {
 		result = true
-		global.GVA_REDIS.SetNX(context.Background(), fmt.Sprintf("userPushTask_%d", task.UserId), 1, time.Duration(300)*time.Second)
+		global.GVA_REDIS.SetNX(context.Background(), fmt.Sprintf("userPushTask_%d", task.UserId), 1, time.Duration(3)*time.Second)
 	}
 	return
 }
