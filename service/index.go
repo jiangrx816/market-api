@@ -61,15 +61,15 @@ func (ins *IndexService) ApiGetPayList() (payListData []response.FormatData) {
 
 	var temp response.FormatData
 	for idx, _ := range payList {
-		var payCPrice int
+		var payCPrice float64
 		payCPrice = payList[idx].CPrice / 100
 		temp.Checked = payList[idx].Checked
 		temp.TotalFee = payCPrice
 		temp.Number = payList[idx].Number
 		temp.NumberExt = payList[idx].NumberExt
 		temp.Value = strconv.Itoa(payList[idx].Id)
-
-		temp.Name = payList[idx].Name + "（￥" + strconv.Itoa(payCPrice) + "）"
+		strValue := fmt.Sprintf("%.2f", payCPrice)
+		temp.Name = payList[idx].Name + "（￥" + strValue + "）"
 		payListData = append(payListData, temp)
 	}
 	return payListData
@@ -83,7 +83,7 @@ func (ins *IndexService) ApiGetGoodPay() (info model.ZMPay) {
 	odb.Find(&payList)
 	if len(payList) > 0 {
 		info = payList[0]
-		var payCPrice int
+		var payCPrice float64
 		payCPrice = info.CPrice / 100
 		info.CPrice = payCPrice
 	}

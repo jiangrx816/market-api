@@ -1,12 +1,12 @@
 package response
 
 type FormatData struct {
-	Value     string `json:"value"`
-	Name      string `json:"name"`
-	Checked   bool   `json:"checked"`
-	Number    int    `json:"number"`
-	NumberExt int    `json:"number_ext"`
-	TotalFee  int    `json:"total_fee"`
+	Value     string  `json:"value"`
+	Name      string  `json:"name"`
+	Checked   bool    `json:"checked"`
+	Number    int     `json:"number"`
+	NumberExt int     `json:"number_ext"`
+	TotalFee  float64 `json:"total_fee"`
 }
 
 type MemberData struct {
