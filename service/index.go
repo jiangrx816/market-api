@@ -259,7 +259,6 @@ func (ins *IndexService) ApiGetMyTaskList(page, userId int) (taskLists []respons
 			}
 		}
 
-		temp.Address = utils.TruncateString(taskList[idx].Address, 5)
 		temp.Desc = utils.TruncateString(taskList[idx].Desc, 50) + "......"
 		for dIndex, _ := range memberList {
 			if taskList[idx].UserId == memberList[dIndex].UserId {
@@ -268,7 +267,7 @@ func (ins *IndexService) ApiGetMyTaskList(page, userId int) (taskLists []respons
 		}
 
 		temp.Date = utils.GetUnixTimeToDateTime1(taskList[idx].AddTime)
-		temp.Address = taskList[idx].Address
+		temp.Address = utils.TruncateString(taskList[idx].Address, 5)
 		temp.Status = taskList[idx].Status
 		taskLists = append(taskLists, temp)
 	}
