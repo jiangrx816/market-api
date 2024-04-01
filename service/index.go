@@ -40,7 +40,7 @@ func (ins *IndexService) ApiGetUserExtInfo(userId int) (userInfo model.ZMUserExt
 //ApiGetBannerList 获取Banner的列表信息
 func (ins *IndexService) ApiGetBannerList() (bannerList []model.ZMBanner) {
 	bookDB := global.GVA_DB.Model(&model.ZMBanner{}).Debug()
-	bookDB = bookDB.Where("status=1").Order("id asc")
+	bookDB = bookDB.Where("is_deleted = 0 and status=1").Order("id asc")
 	bookDB.Find(&bannerList)
 	return bannerList
 }
@@ -48,7 +48,7 @@ func (ins *IndexService) ApiGetBannerList() (bannerList []model.ZMBanner) {
 //ApiGetTagList 获取工种的列表信息
 func (ins *IndexService) ApiGetTagList() (tagList []model.ZMTags) {
 	odb := global.GVA_DB.Model(&model.ZMTags{}).Debug()
-	odb = odb.Where("status=1").Order("id asc").Limit(15)
+	odb = odb.Where("is_deleted = 0 and status=1").Order("id asc").Limit(15)
 	odb.Find(&tagList)
 	return tagList
 }
@@ -98,7 +98,7 @@ func (ins *IndexService) ApiGetGoodMemberList(page, tType int) (memberLists []re
 	offset := size * (page - 1)
 	var memberList []model.ZMUser
 	odb := global.GVA_DB.Model(&model.ZMUser{}).Debug()
-	odb = odb.Where("status= 1 and is_best = 1")
+	odb = odb.Where("is_deleted = 0 and status= 1 and is_best = 1")
 	if tType > 0 && tType < 15 {
 		odb = odb.Where(" tag_id = ?", tType)
 	}
@@ -183,7 +183,7 @@ func (ins *IndexService) ApiGetTaskList(page, tType int) (taskLists []response.F
 	offset := size * (page - 1)
 	var taskList []model.ZMTask
 	odb := global.GVA_DB.Model(&model.ZMTask{}).Debug()
-	odb = odb.Where("status > 0")
+	odb = odb.Where("is_deleted = 0 and status > 0")
 	if tType > 0 && tType < 15 {
 		odb = odb.Where(" tag_id = ?", tType)
 	}
@@ -237,7 +237,7 @@ func (ins *IndexService) ApiGetMyTaskList(page, userId int) (taskLists []respons
 	var taskList []model.ZMTask
 	odb := global.GVA_DB.Model(&model.ZMTask{}).Debug()
 	if userId > 0 {
-		odb = odb.Where(" user_id = ?", userId)
+		odb = odb.Where("is_deleted = 0 and user_id = ?", userId)
 	}
 	odb.Count(&count)
 	odb = odb.Order("id desc").Limit(size).Offset(offset)
