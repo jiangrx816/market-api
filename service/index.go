@@ -348,7 +348,8 @@ func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (resul
 	task.TagId = taskData.TagId
 	task.UserId = taskData.UserId
 	task.Title = taskData.Title
-	task.Desc = taskData.TaskDesc
+	tempDesc := utils.ClearMobileText(taskData.TaskDesc)
+	task.Desc = tempDesc
 	task.Address = taskData.Address
 	task.Status = 1
 	task.AddTime = utils.GetCurrentUnixTimestamp()
