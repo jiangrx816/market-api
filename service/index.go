@@ -329,6 +329,16 @@ func (ins *IndexService) ApiCheckPushTask(userId int) (result bool) {
 	return
 }
 
+//getBadWordsList 获取过滤的坏词
+func (ins *IndexService) getBadWordsList() (badWordsSlice []string) {
+	var badWords []model.ZMBadWords
+	global.GVA_DB.Model(&model.ZMBadWords{}).Debug().Find(&badWords)
+	for idx, _ := range badWords {
+		badWordsSlice = append(badWordsSlice, badWords[idx].Name)
+	}
+	return
+}
+
 //ApiDoMakeTaskData 发布任务
 func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (result bool) {
 	if taskData.Title == "" || taskData.TaskDesc == "" || taskData.Address == "" || taskData.TagId == 0 || taskData.UserId == 0 {
@@ -344,14 +354,13 @@ func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (resul
 		return false
 	}
 
-	var sensitiveWords []string
 	var task model.ZMTask
 	odb := global.GVA_DB.Model(&model.ZMTask{}).Debug()
 	task.TagId = taskData.TagId
 	task.UserId = taskData.UserId
 	task.Title = taskData.Title
 	tempDesc := utils.ClearMobileText(taskData.TaskDesc)
-	task.Desc = utils.RegContent(tempDesc, sensitiveWords)
+	task.Desc = utils.RegContent(tempDesc, ins.getBadWordsList())
 	task.Address = taskData.Address
 	task.Status = 1
 	task.AddTime = utils.GetCurrentUnixTimestamp()

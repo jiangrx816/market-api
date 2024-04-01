@@ -122,3 +122,14 @@ type ZMUserExt struct {
 func (ZMUserExt) TableName() string {
 	return "zm_user_ext"
 }
+
+// ZMBadWords
+type ZMBadWords struct {
+	Id   int    `json:"-"`
+	Name string `json:"desc"`
+}
+
+// ZMBadWords ZMBadWords 表名
+func (ZMBadWords) TableName() string {
+	return "zm_bad_words"
+}
