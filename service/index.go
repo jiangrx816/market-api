@@ -99,7 +99,7 @@ func (ins *IndexService) ApiGetGoodMemberList(page, tType int) (memberLists []re
 	var memberList []model.ZMUser
 	odb := global.GVA_DB.Model(&model.ZMUser{}).Debug()
 	odb = odb.Where("status= 1 and is_best = 1")
-	if tType > 0 {
+	if tType > 0 && tType < 15 {
 		odb = odb.Where(" tag_id = ?", tType)
 	}
 	odb.Count(&count)
@@ -184,7 +184,7 @@ func (ins *IndexService) ApiGetTaskList(page, tType int) (taskLists []response.F
 	var taskList []model.ZMTask
 	odb := global.GVA_DB.Model(&model.ZMTask{}).Debug()
 	odb = odb.Where("status > 0")
-	if tType > 0 {
+	if tType > 0 && tType < 15 {
 		odb = odb.Where(" tag_id = ?", tType)
 	}
 	odb.Count(&count)
