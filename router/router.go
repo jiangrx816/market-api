@@ -65,6 +65,8 @@ func InitRouter() *gin.Engine {
 		apiWxApi.POST("/open/pay", app.ApiGetWxOpenPay)
 		//微信支付回调
 		apiWxApi.POST("/pay/notice", app.ApiGetWxPayCallback)
+		//微信支付更新为取消
+		apiWxApi.POST("/pay/cancel", app.ApiGetWxPayCancel)
 	}
 
 	return router

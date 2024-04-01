@@ -345,3 +345,23 @@ func (ws *WechatService) ApiDealUserPaySuccess(notifyReq *notify.Request, result
 		}
 	}
 }
+
+//ApiGetWxPayCancel 微信支付更新为取消
+func (ws *WechatService) ApiGetWxPayCancel(cancelData request.WXCancelPayData) (result bool) {
+	if cancelData.UserId < 0 {
+		return
+	}
+	//获取用户最后一条没有支付的订单
+	var orderTemp model.ZMOrder
+	obj := global.GVA_DB.Model(&model.ZMOrder{}).Debug().Where("user_id=? and status = 0", cancelData.UserId)
+	obj.Order("id desc").First(&orderTemp)
+	if orderTemp.Id > 0 {
+		var order model.ZMOrder
+		order.Status = -1 //取消支付
+		affected := global.GVA_DB.Model(&model.ZMOrder{}).Debug().Where("id = ?", orderTemp.Id).Update(&order).RowsAffected
+		if affected > 0 {
+			result = true
+		}
+	}
+	return
+}

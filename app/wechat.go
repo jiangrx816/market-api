@@ -98,3 +98,17 @@ func ApiGetWxPayCallback(c *gin.Context) {
 	service.ApiDealUserPaySuccess(notifyReq, result)
 	c.JSON(http.StatusOK, gin.H{"code": "SUCCESS"})
 }
+
+//ApiGetWxPayCancel 微信支付更新为取消
+func ApiGetWxPayCancel(c *gin.Context) {
+	var json request.WXCancelPayData
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	var service service.WechatService
+	data := service.ApiGetWxPayCancel(json)
+	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
+		"data": data,
+	}, global.SUCCESS_MSG, c)
+}

@@ -92,3 +92,7 @@ type OpenGoodPay struct {
 	IsAgree   int      `json:"is_agree"`
 	UserCase  []string `json:"user_case"`
 }
+
+type WXCancelPayData struct {
+	UserId int `json:"user_id"`
+}
