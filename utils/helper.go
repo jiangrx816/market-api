@@ -6,6 +6,7 @@ import (
 	"market/global"
 	"regexp"
 	"strconv"
+	"strings"
 )
 
 // GetIntParamItem 将获取的参数进行转成int类型
@@ -59,4 +60,31 @@ func RemoveDuplicates(slice []int64) []int64 {
 	}
 
 	return result
+}
+
+// RegContent 正则匹配敏感词
+func RegContent(matchContent string, sensitiveWords []string) string {
+	if len(sensitiveWords) < 1 {
+		return matchContent
+	}
+	banWords := make([]string, 0) // 收集匹配到的敏感词
+
+	// 构造正则匹配字符
+	regStr := strings.Join(sensitiveWords, "|")
+	wordReg := regexp.MustCompile(regStr)
+	println("regStr -> ", regStr)
+
+	textBytes := wordReg.ReplaceAllFunc([]byte(matchContent), func(bytes []byte) []byte {
+		banWords = append(banWords, string(bytes))
+		textRunes := []rune(string(bytes))
+		replaceBytes := make([]byte, 0)
+		for i, runeLen := 0, len(textRunes); i < runeLen; i++ {
+			replaceBytes = append(replaceBytes, byte('*'))
+		}
+		return replaceBytes
+	})
+	fmt.Println("srcText        -> ", matchContent)
+	fmt.Println("replaceText    -> ", string(textBytes))
+	fmt.Println("sensitiveWords -> ", banWords)
+	return string(textBytes)
 }

@@ -344,13 +344,14 @@ func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (resul
 		return false
 	}
 
+	var sensitiveWords []string
 	var task model.ZMTask
 	odb := global.GVA_DB.Model(&model.ZMTask{}).Debug()
 	task.TagId = taskData.TagId
 	task.UserId = taskData.UserId
 	task.Title = taskData.Title
 	tempDesc := utils.ClearMobileText(taskData.TaskDesc)
-	task.Desc = tempDesc
+	task.Desc = utils.RegContent(tempDesc, sensitiveWords)
 	task.Address = taskData.Address
 	task.Status = 1
 	task.AddTime = utils.GetCurrentUnixTimestamp()
