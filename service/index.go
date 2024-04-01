@@ -219,7 +219,7 @@ func (ins *IndexService) ApiGetTaskList(page, tType int) (taskLists []response.F
 			}
 		}
 
-		temp.Date = taskList[idx].CreatedAt
+		temp.Date = utils.GetUnixTimeToDateTime1(taskList[idx].AddTime)
 		temp.Address = taskList[idx].Address
 		temp.Status = taskList[idx].Status
 
@@ -269,7 +269,7 @@ func (ins *IndexService) ApiGetMyTaskList(page, userId int) (taskLists []respons
 			}
 		}
 
-		temp.Date = taskList[idx].CreatedAt
+		temp.Date = utils.GetUnixTimeToDateTime1(taskList[idx].AddTime)
 		temp.Address = utils.TruncateString(taskList[idx].Address, 5)
 		temp.Status = taskList[idx].Status
 		taskLists = append(taskLists, temp)
@@ -295,7 +295,7 @@ func (ins *IndexService) ApiGetTaskInfo(taskId int) (taskInfo response.FormatTas
 	taskInfo.TagName = tagInfo.Name
 	taskInfo.Desc = task.Desc
 	taskInfo.Mobile = user.Mobile
-	taskInfo.Date = task.CreatedAt
+	taskInfo.Date = utils.GetUnixTimeToDateTime(task.AddTime)
 	taskInfo.Address = task.Address
 	taskInfo.Status = task.Status
 
@@ -363,7 +363,7 @@ func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (resul
 	task.Desc = utils.RegContent(tempDesc, ins.getBadWordsList())
 	task.Address = taskData.Address
 	task.Status = 1
-	task.CreatedAt = utils.GetCurrentDateTime()
+	task.AddTime = utils.GetCurrentUnixTimestamp()
 	affected := odb.Create(&task).RowsAffected
 	if affected > 0 {
 		result = true

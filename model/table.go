@@ -72,6 +72,7 @@ type ZMTask struct {
 	UserId    int64  `json:"user_id"`
 	TagId     int    `json:"tag_id"`
 	Status    int    `json:"status"`
+	AddTime   int64  `json:"add_time"`
 	Address   string `json:"address"`
 	CreatedAt string `json:"created_at"`
 }
