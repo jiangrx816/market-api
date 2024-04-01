@@ -136,7 +136,8 @@ func (ws *WechatService) OpenPayPreCreatData(openData request.OpenGoodPay) (resu
 		var userExtCreateData model.ZMUserExt
 		userExtCreateData.UserId = int64(openData.UserID)
 		userExtCreateData.Address = openData.UserArea
-		userExtCreateData.Desc = openData.UserSelf
+		tempDesc := help.ClearMobileText(openData.UserSelf)
+		userExtCreateData.Desc = tempDesc
 		if len(openData.UserCase) > 0 {
 			caseInfo, _ := json.Marshal(openData.UserCase)
 			userExtCreateData.Demo = string(caseInfo)
