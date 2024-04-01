@@ -204,6 +204,7 @@ func (ins *IndexService) ApiGetTaskList(page, tType int) (taskLists []response.F
 	for idx, _ := range taskList {
 		temp.Id = taskList[idx].Id
 		temp.TagId = taskList[idx].TagId
+		temp.UserId = taskList[idx].UserId
 		for dIndex, _ := range tagDataList {
 			if taskList[idx].TagId == tagDataList[dIndex].Id {
 				temp.TagName = tagDataList[dIndex].Name

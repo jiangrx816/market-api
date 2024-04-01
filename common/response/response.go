@@ -30,6 +30,7 @@ type MemberData struct {
 type FormatTaskData struct {
 	Id      int    `json:"id"`
 	TagId   int    `json:"tag_id"`
+	UserId  int64  `json:"user_id"`
 	TagName string `json:"tag_name"`
 	Desc    string `json:"desc"`
 	Mobile  string `json:"mobile"`
