@@ -349,7 +349,7 @@ func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (resul
 	cacheCount := fmt.Sprintf("request_count:%d", taskData.UserId)
 	count, _ := global.GVA_REDIS.Get(context.Background(), cacheCount).Result()
 	countInt, _ := strconv.Atoi(count)
-	fmt.Println(countInt)
+	fmt.Printf("countInt的次数：%#v \n", countInt)
 	if countInt >= 3 {
 		return false
 	}
