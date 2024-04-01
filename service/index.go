@@ -163,8 +163,8 @@ func (ins *IndexService) ApiGetMemberInfo(userId int) (userInfo response.MemberD
 	userInfo.Id = user.Id
 	userInfo.UserId = user.UserId
 	userInfo.OpenId = user.OpenId
-	userInfo.NickName = user.NickName
-	userInfo.RealName = user.RealName
+	userInfo.NickName = utils.TruncateString(user.NickName, 5)
+	userInfo.RealName = utils.TruncateString(user.RealName, 5)
 	userInfo.HeadUrl = user.HeadUrl
 	userInfo.Mobile = user.Mobile
 	userInfo.TagId = user.TagId
