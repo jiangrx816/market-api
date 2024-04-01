@@ -289,6 +289,7 @@ func (ins *IndexService) ApiGetTaskInfo(taskId int) (taskInfo response.FormatTas
 
 	tagInfo := ins.GetTagInfo(task.TagId)
 	taskInfo.Id = task.Id
+	taskInfo.UserId = task.UserId
 	taskInfo.TagId = task.TagId
 	taskInfo.TagName = tagInfo.Name
 	taskInfo.Desc = task.Desc
