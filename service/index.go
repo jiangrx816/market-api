@@ -363,7 +363,6 @@ func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (resul
 	task.Desc = utils.RegContent(tempDesc, ins.getBadWordsList())
 	task.Address = taskData.Address
 	task.Status = 1
-	task.AddTime = utils.GetCurrentUnixTimestamp()
 	task.CreatedAt = utils.GetCurrentDateTime()
 	affected := odb.Create(&task).RowsAffected
 	if affected > 0 {
