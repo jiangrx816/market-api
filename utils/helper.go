@@ -45,3 +45,18 @@ func ClearMobileText(text string) (cleanedText string) {
 
 	return
 }
+
+//RemoveDuplicates 切片去重
+func RemoveDuplicates(slice []int64) []int64 {
+	encountered := map[int64]bool{}
+	result := []int64{}
+
+	for v := range slice {
+		if encountered[slice[v]] != true {
+			encountered[slice[v]] = true
+			result = append(result, slice[v])
+		}
+	}
+
+	return result
+}

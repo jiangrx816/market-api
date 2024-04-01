@@ -196,9 +196,10 @@ func (ins *IndexService) ApiGetTaskList(page, tType int) (taskLists []response.F
 	for idx, _ := range taskList {
 		userIds = append(userIds, taskList[idx].UserId)
 	}
+	userIdsResult := utils.RemoveDuplicates(userIds)
 	var memberList []model.ZMUser
 	odbUser := global.GVA_DB.Model(&model.ZMUser{}).Debug()
-	odb = odbUser.Where("user_id in(?)", userIds).Find(&memberList)
+	odb = odbUser.Where("user_id in(?)", userIdsResult).Find(&memberList)
 
 	var temp response.FormatTaskData
 	for idx, _ := range taskList {
@@ -210,10 +211,10 @@ func (ins *IndexService) ApiGetTaskList(page, tType int) (taskLists []response.F
 				temp.TagName = tagDataList[dIndex].Name
 			}
 		}
-
 		temp.Desc = utils.TruncateString(taskList[idx].Desc, 60) + "......"
+		temp.Mobile = ""
 		for dIndex, _ := range memberList {
-			if taskList[idx].UserId == memberList[dIndex].UserId {
+			if memberList[dIndex].UserId == taskList[idx].UserId {
 				temp.Mobile = memberList[dIndex].Mobile
 			}
 		}
