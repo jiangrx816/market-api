@@ -213,9 +213,11 @@ func (ins *IndexService) ApiGetTaskList(page, tType int) (taskLists []response.F
 
 		temp.Desc = utils.TruncateString(taskList[idx].Desc, 60) + "......"
 		for dIndex, _ := range memberList {
+			var tempMobile string
 			if taskList[idx].UserId == memberList[dIndex].UserId {
-				temp.Mobile = memberList[dIndex].Mobile
+				tempMobile = memberList[dIndex].Mobile
 			}
+			temp.Mobile = tempMobile
 		}
 
 		temp.Date = utils.GetUnixTimeToDateTime1(taskList[idx].AddTime)
