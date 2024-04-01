@@ -74,7 +74,6 @@ type ZMTask struct {
 	Status    int    `json:"status"`
 	Address   string `json:"address"`
 	CreatedAt string `json:"created_at"`
-	AddTime   int64  `json:"add_time"`
 }
 
 // ZMTask ZMTask 表名

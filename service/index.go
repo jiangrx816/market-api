@@ -219,7 +219,7 @@ func (ins *IndexService) ApiGetTaskList(page, tType int) (taskLists []response.F
 			}
 		}
 
-		temp.Date = utils.GetUnixTimeToDateTime1(taskList[idx].AddTime)
+		temp.Date = taskList[idx].CreatedAt
 		temp.Address = taskList[idx].Address
 		temp.Status = taskList[idx].Status
 
@@ -269,7 +269,7 @@ func (ins *IndexService) ApiGetMyTaskList(page, userId int) (taskLists []respons
 			}
 		}
 
-		temp.Date = utils.GetUnixTimeToDateTime1(taskList[idx].AddTime)
+		temp.Date = taskList[idx].CreatedAt
 		temp.Address = utils.TruncateString(taskList[idx].Address, 5)
 		temp.Status = taskList[idx].Status
 		taskLists = append(taskLists, temp)
@@ -295,7 +295,7 @@ func (ins *IndexService) ApiGetTaskInfo(taskId int) (taskInfo response.FormatTas
 	taskInfo.TagName = tagInfo.Name
 	taskInfo.Desc = task.Desc
 	taskInfo.Mobile = user.Mobile
-	taskInfo.Date = utils.GetUnixTimeToDateTime(task.AddTime)
+	taskInfo.Date = task.CreatedAt
 	taskInfo.Address = task.Address
 	taskInfo.Status = task.Status
 
