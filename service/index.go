@@ -135,7 +135,7 @@ func (ins *IndexService) ApiGetGoodMemberList(page, tType int) (memberLists []re
 
 		for dIndex, _ := range memberExtList {
 			if memberList[idx].UserId == memberExtList[dIndex].UserId {
-				temp.Desc = utils.TruncateString(memberExtList[dIndex].Desc, 50) + "......"
+				temp.Desc = utils.TruncateString(utils.ClearMobileText(utils.RegContent(memberExtList[dIndex].Desc, ins.getBadWordsList())), 50) + "......"
 				temp.ViewCount = memberExtList[dIndex].ViewCount
 			}
 		}
@@ -169,7 +169,7 @@ func (ins *IndexService) ApiGetMemberInfo(userId int) (userInfo response.MemberD
 	userInfo.Mobile = user.Mobile
 	userInfo.TagId = user.TagId
 	userInfo.TagName = tagInfo.Name
-	userInfo.Desc = userExt.Desc
+	userInfo.Desc = utils.ClearMobileText(utils.RegContent(userExt.Desc, ins.getBadWordsList()))
 	userInfo.Demo = userExt.Demo
 	userInfo.ViewCount = userExt.ViewCount
 
