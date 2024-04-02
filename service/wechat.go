@@ -302,6 +302,7 @@ func (ws *WechatService) ApiDealUserPaySuccess(notifyReq *notify.Request, result
 			if orderTemp.Id > 0 && orderTemp.Status == 0 {
 				var order model.ZMOrder
 				order.Status = 1 //支付完成
+				order.PaymentNumber = result["transaction_id"].(string)
 				order.PayTime = help.GetCurrentDateTime()
 				obj := global.GVA_DB.Model(&model.ZMOrder{}).Debug().Where("order_id=?", orderId)
 				affected := obj.Update(&order).RowsAffected
