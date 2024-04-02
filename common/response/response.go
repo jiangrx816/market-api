@@ -37,4 +37,5 @@ type FormatTaskData struct {
 	Date    string `json:"date"`
 	Address string `json:"address"`
 	Status  int    `json:"status"`
+	IsBest  int    `json:"is_best"`
 }
