@@ -37,7 +37,8 @@ func ApiGetUserExtInfo(c *gin.Context) {
 //ApiGetBannerList 获取Banner列表
 func ApiGetBannerList(c *gin.Context) {
 	var service service.IndexService
-	list := service.ApiGetBannerList()
+	tType, _ := strconv.Atoi(c.Query("type"))
+	list := service.ApiGetBannerList(tType)
 	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
 		"list": list,
 	}, global.SUCCESS_MSG, c)
