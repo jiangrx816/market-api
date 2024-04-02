@@ -299,7 +299,7 @@ func (ins *IndexService) ApiGetTaskInfo(taskId int) (taskInfo response.FormatTas
 	taskInfo.UserId = task.UserId
 	taskInfo.TagId = task.TagId
 	taskInfo.TagName = tagInfo.Name
-	taskInfo.Desc = task.Desc
+	taskInfo.Desc = utils.ClearMobileText(utils.RegContent(task.Desc, ins.getBadWordsList()))
 	taskInfo.Mobile = user.Mobile
 	taskInfo.Date = utils.GetUnixTimeToDateTime(task.AddTime)
 	taskInfo.Address = task.Address
