@@ -211,7 +211,11 @@ func (ins *IndexService) ApiGetTaskList(page, tType int) (taskLists []response.F
 				temp.TagName = tagDataList[dIndex].Name
 			}
 		}
-		temp.Desc = utils.TruncateString(taskList[idx].Desc, 60) + "......"
+
+		//过滤敏感数据并清除手机号
+		tempDesc := utils.ClearMobileText(utils.RegContent(taskList[idx].Desc, ins.getBadWordsList()))
+		temp.Desc = utils.TruncateString(tempDesc, 60) + "......"
+
 		temp.Mobile = ""
 		temp.IsBest = 0
 		for dIndex, _ := range memberList {
@@ -361,8 +365,7 @@ func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (resul
 	task.TagId = taskData.TagId
 	task.UserId = taskData.UserId
 	task.Title = taskData.Title
-	tempDesc := utils.ClearMobileText(taskData.TaskDesc)
-	task.Desc = utils.RegContent(tempDesc, ins.getBadWordsList())
+	task.Desc = taskData.TaskDesc
 	task.Address = taskData.Address
 	task.Status = 1
 	task.AddTime = utils.GetCurrentUnixTimestamp()
