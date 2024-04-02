@@ -80,7 +80,7 @@ func (ins *IndexService) ApiGetPayList() (payListData []response.FormatData) {
 func (ins *IndexService) ApiGetGoodPay() (info model.ZMPay) {
 	var payList []model.ZMPay
 	odb := global.GVA_DB.Model(&model.ZMPay{}).Debug()
-	odb = odb.Where("type=2 and status=1").Order("sort desc").Limit(1)
+	odb = odb.Where("type=2 and status=1 and is_deleted = 0").Order("sort desc").Limit(1)
 	odb.Find(&payList)
 	if len(payList) > 0 {
 		info = payList[0]
@@ -184,7 +184,7 @@ func (ins *IndexService) ApiGetTaskList(page, tType int) (taskLists []response.F
 	var taskList []model.ZMTask
 	odb := global.GVA_DB.Model(&model.ZMTask{}).Debug()
 	odb = odb.Where("is_deleted = 0 and status > 0")
-	if tType > 0 && tType < 15 {
+	if tType > 1 {
 		odb = odb.Where(" tag_id = ?", tType)
 	}
 	odb.Count(&count)
