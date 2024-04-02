@@ -3,7 +3,6 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"market/app"
-	"market/global"
 )
 
 func InitRouter() *gin.Engine {
@@ -23,7 +22,7 @@ func InitRouter() *gin.Engine {
 		//获取banner列表
 		api.GET("/getBannerList", app.ApiGetBannerList)
 		//获取工种列表
-		api.GET("/getTagList", routerCache(global.RedisURL_CACHE), app.ApiGetTagList)
+		api.GET("/getTagList", app.ApiGetTagList)
 		//获取会员价格列表
 		api.GET("/getPayList", app.ApiGetPayList)
 		//获取优选工匠的价格

@@ -48,7 +48,7 @@ func (ins *IndexService) ApiGetBannerList(tType int) (bannerList []model.ZMBanne
 //ApiGetTagList 获取工种的列表信息
 func (ins *IndexService) ApiGetTagList() (tagList []model.ZMTags) {
 	odb := global.GVA_DB.Model(&model.ZMTags{}).Debug()
-	odb = odb.Where("is_deleted = 0 and status=1").Order("id asc").Limit(15)
+	odb = odb.Where("is_deleted = 0 and status=1").Order("sort desc").Order("id asc").Limit(20)
 	odb.Find(&tagList)
 	return tagList
 }
@@ -57,7 +57,7 @@ func (ins *IndexService) ApiGetTagList() (tagList []model.ZMTags) {
 func (ins *IndexService) ApiGetPayList() (payListData []response.FormatData) {
 	var payList []model.ZMPay
 	odb := global.GVA_DB.Model(&model.ZMPay{}).Debug()
-	odb = odb.Where("type=1 and status=1").Order("sort desc").Limit(6)
+	odb = odb.Where("type=1 and status=1 and is_deleted = 0").Order("sort desc").Limit(6)
 	odb.Find(&payList)
 
 	var temp response.FormatData
