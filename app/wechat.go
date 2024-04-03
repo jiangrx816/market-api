@@ -121,8 +121,9 @@ func ApiGetWxPayRefunds(c *gin.Context) {
 		return
 	}
 	var service service.WechatService
-	data := service.ApiGetWxPayRefunds(json)
+	message, code := service.ApiGetWxPayRefunds(json)
 	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
-		"data": data,
+		"message": message,
+		"code":    code,
 	}, global.SUCCESS_MSG, c)
 }
