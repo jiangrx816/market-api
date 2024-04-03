@@ -96,3 +96,7 @@ type OpenGoodPay struct {
 type WXCancelPayData struct {
 	UserId int `json:"user_id"`
 }
+
+type WXRefundsPayData struct {
+	OrderId int `json:"order_id"`
+}

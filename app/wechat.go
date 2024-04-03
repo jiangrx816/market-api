@@ -112,3 +112,17 @@ func ApiGetWxPayCancel(c *gin.Context) {
 		"data": data,
 	}, global.SUCCESS_MSG, c)
 }
+
+//ApiGetWxPayRefunds 微信支付退款
+func ApiGetWxPayRefunds(c *gin.Context) {
+	var json request.WXRefundsPayData
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	var service service.WechatService
+	data := service.ApiGetWxPayRefunds(json)
+	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
+		"data": data,
+	}, global.SUCCESS_MSG, c)
+}

@@ -13,6 +13,7 @@ import (
 	"github.com/wechatpay-apiv3/wechatpay-go/core/option"
 	"github.com/wechatpay-apiv3/wechatpay-go/services/payments"
 	"github.com/wechatpay-apiv3/wechatpay-go/services/payments/jsapi"
+	"github.com/wechatpay-apiv3/wechatpay-go/services/refunddomestic"
 	"github.com/wechatpay-apiv3/wechatpay-go/utils"
 	"io/ioutil"
 	"log"
@@ -359,7 +360,7 @@ func (ws *WechatService) ApiGetWxPayCancel(cancelData request.WXCancelPayData) (
 	if orderTemp.Id > 0 {
 		//调用微信关单
 		ws.JsApiCloseOrder(orderTemp)
-		
+
 		var order model.ZMOrder
 		order.Status = -1 //取消支付
 		affected := global.GVA_DB.Model(&model.ZMOrder{}).Debug().Where("id = ?", orderTemp.Id).Update(&order).RowsAffected
@@ -405,4 +406,63 @@ func (ws *WechatService) JsApiCloseOrder(orderInfo model.ZMOrder) (JSPayParam re
 	}
 
 	return
+}
+
+//ApiGetWxPayRefunds 微信支付退款
+func (ws *WechatService) ApiGetWxPayRefunds(params request.WXRefundsPayData) (JSPayParam request.JSPayParam) {
+	fmt.Printf("退费操作的参数:%#v \n", params)
+	//查询当前订单是否已支付成功的状态
+	var orderTemp model.ZMOrder
+	obj := global.GVA_DB.Model(&model.ZMOrder{}).Debug().Where("order_id=? and status = 1 and is_deleted = 0", params.OrderId)
+	obj.Order("id desc").First(&orderTemp)
+	//说明存在可以退费的数据
+	if orderTemp.Id > 0 {
+		//进行退费操作
+		ws.refundsApiServiceCreate(&orderTemp)
+	}
+	return
+}
+
+//refundsApiServiceCreate 创建退款申请操作
+func (ws *WechatService) refundsApiServiceCreate(orderInfo *model.ZMOrder) {
+	fmt.Printf("退费操作的参数:%#v \n", orderInfo)
+	//return
+	wechatConf := global.GVA_CONFIG.Wechat
+	// 使用 utils 提供的函数从本地文件中加载商户私钥，商户私钥会用来生成请求的签名
+	mchPrivateKey, err := utils.LoadPrivateKeyWithPath("/data/web/market-api/run/wx_market_cert/apiclient_key.pem")
+	if err != nil {
+		log.Fatal("load merchant private key error")
+	}
+
+	ctx := context.Background()
+	// 使用商户私钥等初始化 client，并使它具有自动定时获取微信支付平台证书的能力
+	opts := []core.ClientOption{
+		option.WithWechatPayAutoAuthCipher(wechatConf.MchId, wechatConf.MchCert, mchPrivateKey, wechatConf.MchIv3),
+	}
+	client, err := core.NewClient(ctx, opts...)
+	if err != nil {
+		log.Printf("new wechat pay client err:%s", err)
+	}
+
+	svc := refunddomestic.RefundsApiService{Client: client}
+	resp, result, err := svc.Create(ctx,
+		refunddomestic.CreateRequest{
+			SubMchid:    core.String(wechatConf.MchId),
+			OutRefundNo: core.String(strconv.FormatInt(orderInfo.OrderId, 10)),
+			Reason:      core.String("后台处理退款_" + orderInfo.Name),
+			NotifyUrl:   core.String("https://weixin.qq.com"),
+			Amount: &refunddomestic.AmountReq{
+				Currency: core.String("CNY"),
+				Refund:   core.Int64(int64(orderInfo.CPrice)), //必填，退款金额，单位为分
+				Total:    core.Int64(int64(orderInfo.CPrice)), //必填，原支付交易订单金额
+			},
+		},
+	)
+	if err != nil {
+		// 处理错误
+		log.Printf("call Create err:%s", err)
+	} else {
+		// 处理返回结果
+		log.Printf("status=%d resp=%s", result.Response.StatusCode, resp)
+	}
 }

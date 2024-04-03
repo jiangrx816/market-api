@@ -161,6 +161,7 @@ github.com/wechatpay-apiv3/wechatpay-go/core/option
 github.com/wechatpay-apiv3/wechatpay-go/services
 github.com/wechatpay-apiv3/wechatpay-go/services/payments
 github.com/wechatpay-apiv3/wechatpay-go/services/payments/jsapi
+github.com/wechatpay-apiv3/wechatpay-go/services/refunddomestic
 github.com/wechatpay-apiv3/wechatpay-go/utils
 github.com/wechatpay-apiv3/wechatpay-go/utils/task
 # go.uber.org/multierr v1.10.0
