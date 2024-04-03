@@ -447,10 +447,12 @@ func (ws *WechatService) refundsApiServiceCreate(orderInfo *model.ZMOrder) {
 	svc := refunddomestic.RefundsApiService{Client: client}
 	resp, result, err := svc.Create(ctx,
 		refunddomestic.CreateRequest{
-			SubMchid:    core.String(wechatConf.MchId),
-			OutRefundNo: core.String(strconv.FormatInt(orderInfo.OrderId, 10)),
-			Reason:      core.String("后台处理退款_" + orderInfo.Name),
-			NotifyUrl:   core.String("https://weixin.qq.com"),
+			SubMchid:      core.String(wechatConf.MchId),
+			OutRefundNo:   core.String(strconv.FormatInt(orderInfo.OrderId, 10)),
+			TransactionId: core.String(orderInfo.PaymentNumber),
+			OutTradeNo:    core.String(orderInfo.PaymentNumber),
+			Reason:        core.String("后台处理退款_" + orderInfo.Name),
+			NotifyUrl:     core.String("https://weixin.qq.com"),
 			Amount: &refunddomestic.AmountReq{
 				Currency: core.String("CNY"),
 				Refund:   core.Int64(int64(orderInfo.CPrice)), //必填，退款金额，单位为分
