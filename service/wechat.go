@@ -357,6 +357,9 @@ func (ws *WechatService) ApiGetWxPayCancel(cancelData request.WXCancelPayData) (
 	obj := global.GVA_DB.Model(&model.ZMOrder{}).Debug().Where("user_id=? and status = 0", cancelData.UserId)
 	obj.Order("id desc").First(&orderTemp)
 	if orderTemp.Id > 0 {
+		//调用微信关单
+		ws.JsApiCloseOrder(orderTemp)
+		
 		var order model.ZMOrder
 		order.Status = -1 //取消支付
 		affected := global.GVA_DB.Model(&model.ZMOrder{}).Debug().Where("id = ?", orderTemp.Id).Update(&order).RowsAffected
@@ -364,5 +367,42 @@ func (ws *WechatService) ApiGetWxPayCancel(cancelData request.WXCancelPayData) (
 			result = true
 		}
 	}
+	return
+}
+
+//JsApiCloseOrder JSAPI关闭单
+func (ws *WechatService) JsApiCloseOrder(orderInfo model.ZMOrder) (JSPayParam request.JSPayParam) {
+	wechatConf := global.GVA_CONFIG.Wechat
+	// 使用 utils 提供的函数从本地文件中加载商户私钥，商户私钥会用来生成请求的签名
+	mchPrivateKey, err := utils.LoadPrivateKeyWithPath("/data/web/market-api/run/wx_market_cert/apiclient_key.pem")
+	if err != nil {
+		log.Fatal("load merchant private key error")
+	}
+
+	ctx := context.Background()
+	// 使用商户私钥等初始化 client，并使它具有自动定时获取微信支付平台证书的能力
+	opts := []core.ClientOption{
+		option.WithWechatPayAutoAuthCipher(wechatConf.MchId, wechatConf.MchCert, mchPrivateKey, wechatConf.MchIv3),
+	}
+	client, err := core.NewClient(ctx, opts...)
+	if err != nil {
+		log.Fatalf("new wechat pay client err:%s", err)
+	}
+	svc := jsapi.JsapiApiService{Client: client}
+	result, err := svc.CloseOrder(ctx,
+		jsapi.CloseOrderRequest{
+			OutTradeNo: core.String(strconv.FormatInt(orderInfo.OrderId, 10)),
+			Mchid:      core.String(wechatConf.MchId),
+		},
+	)
+
+	if err != nil {
+		// 处理错误
+		log.Printf("关闭订单call CloseOrder err:%s", err)
+	} else {
+		// 处理返回结果
+		log.Printf("关闭订单status=%d", result.Response.StatusCode)
+	}
+
 	return
 }
