@@ -45,6 +45,16 @@ func ApiGetBannerList(c *gin.Context) {
 	}, global.SUCCESS_MSG, c)
 }
 
+//ApiGetBannerListNew 获取Banner列表
+func ApiGetBannerListNew(c *gin.Context) {
+	var service service.IndexService
+	tType, _ := strconv.Atoi(c.Query("type"))
+	list := service.ApiGetBannerListNew(tType)
+	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
+		"list": list,
+	}, global.SUCCESS_MSG, c)
+}
+
 //ApiGetTagList 获取工种列表
 func ApiGetTagList(c *gin.Context) {
 	var service service.IndexService

@@ -21,6 +21,7 @@ func InitRouter() *gin.Engine {
 		api.POST("/uploadFile", app.ApiUploadFileData)
 		//获取banner列表
 		api.GET("/getBannerList", app.ApiGetBannerList)
+		api.GET("/getBannerListNew", app.ApiGetBannerListNew)
 		//获取工种列表
 		api.GET("/getTagList", app.ApiGetTagList)
 		api.GET("/getTagSelect", app.ApiGetTagSelect)

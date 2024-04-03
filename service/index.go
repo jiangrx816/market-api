@@ -45,6 +45,20 @@ func (ins *IndexService) ApiGetBannerList(tType int) (bannerList []model.ZMBanne
 	return bannerList
 }
 
+//ApiGetBannerList 获取Banner的列表信息
+func (ins *IndexService) ApiGetBannerListNew(tType int) (bannerList []string) {
+	var banners []model.ZMBanner
+	bookDB := global.GVA_DB.Model(&model.ZMBanner{}).Debug()
+	bookDB = bookDB.Where("is_deleted = 0 and status=1 and type = ?", tType).Order("id asc").Limit(4)
+	bookDB.Find(&banners)
+
+	for idx, _ := range banners {
+		bannerList = append(bannerList,banners[idx].Image)
+	}
+
+	return bannerList
+}
+
 //ApiGetTagList 获取工种的列表信息
 func (ins *IndexService) ApiGetTagList() (tagList []model.ZMTags) {
 	odb := global.GVA_DB.Model(&model.ZMTags{}).Debug()
