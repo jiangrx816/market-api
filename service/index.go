@@ -53,6 +53,16 @@ func (ins *IndexService) ApiGetTagList() (tagList []model.ZMTags) {
 	return tagList
 }
 
+//ApiGetTagSelect 获取工种的列表信息
+func (ins *IndexService) ApiGetTagSelect() (tagList []string) {
+	list := ins.ApiGetTagList()
+	tagList = append(tagList, "请选择分类")
+	for idx, _ := range list {
+		tagList = append(tagList, list[idx].Name)
+	}
+	return tagList
+}
+
 //ApiGetPayList 获取会员价格的列表信息
 func (ins *IndexService) ApiGetPayList() (payListData []response.FormatData) {
 	var payList []model.ZMPay

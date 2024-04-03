@@ -23,6 +23,7 @@ func InitRouter() *gin.Engine {
 		api.GET("/getBannerList", app.ApiGetBannerList)
 		//获取工种列表
 		api.GET("/getTagList", app.ApiGetTagList)
+		api.GET("/getTagSelect", app.ApiGetTagSelect)
 		//获取会员价格列表
 		api.GET("/getPayList", app.ApiGetPayList)
 		//获取优选工匠的价格

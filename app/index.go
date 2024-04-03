@@ -54,6 +54,15 @@ func ApiGetTagList(c *gin.Context) {
 	}, global.SUCCESS_MSG, c)
 }
 
+//ApiGetTagSelect 获取工种列表下拉
+func ApiGetTagSelect(c *gin.Context) {
+	var service service.IndexService
+	list := service.ApiGetTagSelect()
+	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
+		"list": list,
+	}, global.SUCCESS_MSG, c)
+}
+
 //ApiGetPayList 获取会员价格列表
 func ApiGetPayList(c *gin.Context) {
 	var service service.IndexService
