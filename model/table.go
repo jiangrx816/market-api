@@ -1,5 +1,17 @@
 package model
 
+// ZMAddress
+type ZMAddress struct {
+	Id   int    `json:"id"`
+	Name string `json:"name"`
+	Sort int    `json:"sort"`
+}
+
+// TableName ZMAddress 表名
+func (ZMAddress) TableName() string {
+	return "zm_address"
+}
+
 // ZMBanner
 type ZMBanner struct {
 	Id     int    `json:"-"`
