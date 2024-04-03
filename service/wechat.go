@@ -409,7 +409,7 @@ func (ws *WechatService) JsApiCloseOrder(orderInfo model.ZMOrder) (JSPayParam re
 }
 
 //ApiGetWxPayRefunds 微信支付退款
-func (ws *WechatService) ApiGetWxPayRefunds(params request.WXRefundsPayData) (JSPayParam request.JSPayParam) {
+func (ws *WechatService) ApiGetWxPayRefunds(params request.WXRefundsPayData) (message string, code int) {
 	fmt.Printf("退费操作的参数:%#v \n", params)
 	//查询当前订单是否已支付成功的状态
 	var orderTemp model.ZMOrder
@@ -418,13 +418,80 @@ func (ws *WechatService) ApiGetWxPayRefunds(params request.WXRefundsPayData) (JS
 	//说明存在可以退费的数据
 	if orderTemp.Id > 0 {
 		//进行退费操作
-		ws.refundsApiServiceCreate(&orderTemp)
+		err, status := ws.refundsApiServiceCreate(&orderTemp)
+		if err != nil || status != http.StatusOK {
+			message = err.Error()
+			return message, status
+		}
+
+		//退款成功，判断订单类型，处理会员情况
+		ws.dealRefundsAfterData(&orderTemp)
+
+		message = "success"
+		code = http.StatusOK
 	}
 	return
 }
 
+//dealRefundsAfterData 退款成功处理之后用户数据
+func (ws *WechatService) dealRefundsAfterData(orderInfo *model.ZMOrder) {
+	//将订单状态改成已退费
+	var order model.ZMOrder
+	order.Status = -3                                 //已退费
+	order.RefundTime = help.GetCurrentUnixTimestamp() //退费时间
+	global.GVA_DB.Model(&model.ZMOrder{}).Debug().Where("id = ?", orderInfo.Id).Update(&order)
+
+	//判断订单类型
+	orderType := orderInfo.Type //1普通会员,2优选工匠
+	//查询用户信息
+	var userTemp model.ZMUser
+	obj := global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id=? and status = 1 and is_deleted = 0", orderInfo.UserId)
+	obj.First(&userTemp)
+
+	//用户模型
+	var user model.ZMUser
+	//如果是普通会员
+	if orderType == 1 {
+		//判断会员是否过期
+		today := help.GetCurrentDateYMD()
+		todayInt, _ := strconv.Atoi(today)
+		if todayInt > userTemp.MemberLimit {
+			user.IsMember = 0    //已退费,就不是会员了
+			user.MemberLimit = 0 //已退费,就不是会员了
+			global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id = ?", userTemp.UserId).Update(&order)
+			return
+		}
+		if todayInt < userTemp.MemberLimit {
+			//判断赠送的总天数
+			totalDay := orderInfo.Number + orderInfo.NumberExt
+			//当前的有效期减去时间,就是剩余的会员期限
+			surplus := help.CalculateBeforeDate(userTemp.MemberLimit, totalDay)
+			surplusInt, _ := strconv.Atoi(surplus)
+			//如果剩余的有效期，小于今天，则证明，会员到期
+			if surplusInt <= todayInt {
+				user.IsMember = 0    //已退费,就不是会员了
+				user.MemberLimit = 0 //已退费,就不是会员了
+				global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id = ?", userTemp.UserId).Update(&order)
+				return
+			} else {
+				//如果剩余有效期大于今天，则将有效期的截止日期跟新为当前剩余的有效期
+				user.MemberLimit = surplusInt //更新有效期
+				global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id = ?", userTemp.UserId).Update(&order)
+				return
+			}
+		}
+	}
+
+	//如果是优选工匠
+	if orderType == 2 {
+		user.IsBest = 0    //已退费，改为非优选工匠
+		user.BestLimit = 0 //已退费，改为非优选工匠
+		global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id = ?", orderInfo.UserId).Update(&order)
+	}
+}
+
 //refundsApiServiceCreate 创建退款申请操作
-func (ws *WechatService) refundsApiServiceCreate(orderInfo *model.ZMOrder) {
+func (ws *WechatService) refundsApiServiceCreate(orderInfo *model.ZMOrder) (err error, status int) {
 	fmt.Printf("退费操作的参数:%#v \n", orderInfo)
 	//return
 	wechatConf := global.GVA_CONFIG.Wechat
@@ -447,10 +514,10 @@ func (ws *WechatService) refundsApiServiceCreate(orderInfo *model.ZMOrder) {
 	svc := refunddomestic.RefundsApiService{Client: client}
 	resp, result, err := svc.Create(ctx,
 		refunddomestic.CreateRequest{
-			OutRefundNo:   core.String(strconv.FormatInt(orderInfo.OrderId, 10)),
-			OutTradeNo:    core.String(strconv.FormatInt(orderInfo.OrderId, 10)),
-			Reason:        core.String("后台处理退款_" + orderInfo.Name),
-			NotifyUrl:     core.String("https://weixin.qq.com"),
+			OutRefundNo: core.String(strconv.FormatInt(orderInfo.OrderId, 10)),
+			OutTradeNo:  core.String(strconv.FormatInt(orderInfo.OrderId, 10)),
+			Reason:      core.String("客服处理退款_" + orderInfo.Name),
+			NotifyUrl:   core.String("https://weixin.qq.com"),
 			Amount: &refunddomestic.AmountReq{
 				Currency: core.String("CNY"),
 				Refund:   core.Int64(int64(orderInfo.CPrice)), //必填，退款金额，单位为分
@@ -465,4 +532,6 @@ func (ws *WechatService) refundsApiServiceCreate(orderInfo *model.ZMOrder) {
 		// 处理返回结果
 		log.Printf("status=%d resp=%s", result.Response.StatusCode, resp)
 	}
+
+	return err, result.Response.StatusCode
 }

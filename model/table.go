@@ -28,6 +28,7 @@ type ZMOrder struct {
 	Status        int     `json:"status"`
 	PayTime       string  `json:"pay_time"`
 	PaymentNumber string  `json:"payment_number"`
+	RefundTime    int64   `json:"refund_time"`
 }
 
 // TableName ZMOrder 表名

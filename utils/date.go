@@ -49,6 +49,25 @@ func CalculateAfterDate(dateInt int, days int) (result int) {
 	return
 }
 
+//CalculateBeforeDate 几天前的日期
+func CalculateBeforeDate(dateInt int, days int) (result string) {
+	// 待处理的日期字符串
+	dateStr := strconv.Itoa(dateInt)
+	// 解析日期字符串
+	t, err := time.Parse(DEFAULT_LAYOUT_DATE_YMD, dateStr)
+	if err != nil {
+		fmt.Println("日期解析错误:", err)
+		return
+	}
+	// 计算7天前的日期
+	before7Days := t.AddDate(0, 0, -days)
+	// 格式化输出
+	fmt.Println(before7Days.Format(DEFAULT_LAYOUT_DATE_YMD))
+
+	result = before7Days.Format(DEFAULT_LAYOUT_DATE_YMD)
+	return result
+}
+
 // GetCurrentUnixTimestamp 获取当前的时间戳
 func GetCurrentUnixTimestamp() (timestamp int64) {
 	timestamp = time.Now().Unix()
