@@ -447,7 +447,6 @@ func (ws *WechatService) refundsApiServiceCreate(orderInfo *model.ZMOrder) {
 	svc := refunddomestic.RefundsApiService{Client: client}
 	resp, result, err := svc.Create(ctx,
 		refunddomestic.CreateRequest{
-			SubMchid:      core.String(wechatConf.MchId),
 			OutRefundNo:   core.String(strconv.FormatInt(orderInfo.OrderId, 10)),
 			TransactionId: core.String(orderInfo.PaymentNumber),
 			OutTradeNo:    core.String(orderInfo.PaymentNumber),
