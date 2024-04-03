@@ -3,7 +3,9 @@ package utils
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"io/fs"
 	"market/global"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
@@ -87,4 +89,17 @@ func RegContent(matchContent string, sensitiveWords []string) string {
 	fmt.Println("replaceText    -> ", string(textBytes))
 	fmt.Println("sensitiveWords -> ", banWords)
 	return string(textBytes)
+}
+
+//ExistDir 创建目录
+func ExistDir(path string)  {
+	// 判断路径是否存在
+	_, err := os.ReadDir(path)
+	if err != nil {
+		// 不存在就创建
+		err = os.MkdirAll(path, fs.ModePerm)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
 }

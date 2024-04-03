@@ -204,6 +204,7 @@ func ApiUploadFileData(c *gin.Context) {
 	fName := time.Now().Format("20060102150405") + extension
 
 	path := "/data/static/market/" + userId
+	utils.ExistDir(path)
 
 	// 保存文件到服务器
 	c.SaveUploadedFile(file, filepath.Join(path, fName))
