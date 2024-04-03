@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
 	"market/common"
@@ -185,6 +186,9 @@ func ApiCheckPushTask(c *gin.Context) {
 
 //ApiUploadFileData 上传录音
 func ApiUploadFileData(c *gin.Context) {
+	//获取其他的参数
+	userId := c.PostForm("user_id")
+	fmt.Printf("获取上传的用户：%#v \n", userId)
 	// 获取上传的文件
 	file, err := c.FormFile("file")
 	if err != nil {
