@@ -448,6 +448,7 @@ func (ws *WechatService) dealRefundsAfterData(orderInfo *model.ZMOrder) {
 	obj := global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id=? and status = 1 and is_deleted = 0", orderInfo.UserId)
 	obj.First(&userTemp)
 
+	fmt.Printf("用户信息：%#v \n", userTemp)
 	//用户模型
 	var user model.ZMUser
 	//如果是普通会员
@@ -455,10 +456,11 @@ func (ws *WechatService) dealRefundsAfterData(orderInfo *model.ZMOrder) {
 		//判断会员是否过期
 		today := help.GetCurrentDateYMD()
 		todayInt, _ := strconv.Atoi(today)
+		fmt.Printf("%#v \n",todayInt)
 		if todayInt > userTemp.MemberLimit {
 			user.IsMember = 0    //已退费,就不是会员了
 			user.MemberLimit = 0 //已退费,就不是会员了
-			global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id = ?", userTemp.UserId).Update(&order)
+			global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id = ?", userTemp.UserId).Update(&user)
 			return
 		}
 		if todayInt < userTemp.MemberLimit {
@@ -467,16 +469,18 @@ func (ws *WechatService) dealRefundsAfterData(orderInfo *model.ZMOrder) {
 			//当前的有效期减去时间,就是剩余的会员期限
 			surplus := help.CalculateBeforeDate(userTemp.MemberLimit, totalDay)
 			surplusInt, _ := strconv.Atoi(surplus)
+			fmt.Printf("surplusInt:%#v \n",surplusInt)
+			fmt.Printf("todayInt:%#v \n",todayInt)
 			//如果剩余的有效期，小于今天，则证明，会员到期
 			if surplusInt <= todayInt {
 				user.IsMember = 0    //已退费,就不是会员了
 				user.MemberLimit = 0 //已退费,就不是会员了
-				global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id = ?", userTemp.UserId).Update(&order)
+				global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id = ?", userTemp.UserId).Update(&user)
 				return
 			} else {
 				//如果剩余有效期大于今天，则将有效期的截止日期跟新为当前剩余的有效期
 				user.MemberLimit = surplusInt //更新有效期
-				global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id = ?", userTemp.UserId).Update(&order)
+				global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id = ?", userTemp.UserId).Update(&user)
 				return
 			}
 		}
