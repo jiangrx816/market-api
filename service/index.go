@@ -40,7 +40,7 @@ func (ins *IndexService) ApiGetUserExtInfo(userId int) (userInfo model.ZMUserExt
 //ApiGetBannerList 获取Banner的列表信息
 func (ins *IndexService) ApiGetBannerList(tType int) (bannerList []model.ZMBanner) {
 	bookDB := global.GVA_DB.Model(&model.ZMBanner{}).Debug()
-	bookDB = bookDB.Where("is_deleted = 0 and status=1 and type = ?", tType).Order("id asc")
+	bookDB = bookDB.Where("is_deleted = 0 and status=1 and type = ?", tType).Order("id asc").Limit(4)
 	bookDB.Find(&bannerList)
 	return bannerList
 }
