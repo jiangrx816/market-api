@@ -203,12 +203,12 @@ func ApiUploadFileData(c *gin.Context) {
 	// 生成文件名（使用时间戳）
 	fName := time.Now().Format("20060102150405") + extension
 
-	path := "/data/static/market"
+	path := "/data/static/market/" + userId
 
 	// 保存文件到服务器
 	c.SaveUploadedFile(file, filepath.Join(path, fName))
 
-	dst := "https://oss.58haha.com/market/" + fName
+	dst := "https://oss.58haha.com/market/" + userId + "/" + fName
 
 	c.JSON(200, gin.H{
 		"dst": dst,
