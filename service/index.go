@@ -229,13 +229,16 @@ func (ins *IndexService) ApiGetMemberInfo(userId int) (userInfo response.MemberD
 }
 
 //ApiGetTaskList 获取任务列表
-func (ins *IndexService) ApiGetTaskList(page, tType int) (taskLists []response.FormatTaskData, count int64) {
+func (ins *IndexService) ApiGetTaskList(page, tType, addressId int) (taskLists []response.FormatTaskData, count int64) {
 	tagDataList := ins.GetTagList()
 	size := global.DEFAULT_PAGE_SIZE
 	offset := size * (page - 1)
 	var taskList []model.ZMTask
 	odb := global.GVA_DB.Model(&model.ZMTask{}).Debug()
 	odb = odb.Where("is_deleted = 0 and status > 0")
+	if addressId > 0 {
+		odb = odb.Where(" address_id = ?", addressId)
+	}
 	if tType > 1 {
 		odb = odb.Where(" tag_id = ?", tType)
 	}

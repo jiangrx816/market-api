@@ -136,8 +136,9 @@ func ApiGetMemberInfo(c *gin.Context) {
 func ApiGetTaskList(c *gin.Context) {
 	page := utils.GetIntParamItem("page", 10, c)
 	tType := utils.GetIntParamItem("type", 0, c)
+	addressId := utils.GetIntParamItem("addressId", 0, c)
 	var service service.IndexService
-	list, count := service.ApiGetTaskList(page, tType)
+	list, count := service.ApiGetTaskList(page, tType, addressId)
 	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
 		"list":  list,
 		"count": count,
