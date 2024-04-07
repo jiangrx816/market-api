@@ -516,8 +516,12 @@ func (ins *IndexService) ApiUpdateMemberData(memberData request.MemberUpdateData
 	if memberData.HeadUrl != "" {
 		member.HeadUrl = memberData.HeadUrl
 	}
-
 	global.GVA_DB.Model(&model.ZMUser{}).Debug().Where("user_id=?", memberData.UserId).Update(&member)
+
+	var memberExt model.ZMUserExt
+	memberExt.AddressId = memberData.AddressId
+	memberExt.Address = memberData.Address
+	global.GVA_DB.Model(&model.ZMUserExt{}).Debug().Where("user_id=?", memberData.UserId).Update(&memberExt)
 	return true
 }
 
