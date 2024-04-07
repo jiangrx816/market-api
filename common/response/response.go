@@ -48,3 +48,8 @@ type FormatAddressData struct {
 	ParentId  int                  `json:"-"`
 	ChildList []*FormatAddressData `json:"list"`
 }
+
+type FormatAddressInfo struct {
+	CityId   int    `json:"city_id"`
+	CityName string `json:"city_name"`
+}

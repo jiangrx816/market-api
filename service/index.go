@@ -44,12 +44,20 @@ func (ins *IndexService) ApiGetAddressList() (addressList []model.ZMAddress) {
 }
 
 //ApiGetAddressChildList 获取城市列表信息
-func (ins *IndexService) ApiGetAddressChildList() (addressList []model.ZMAddress) {
+func (ins *IndexService) ApiGetAddressChildList() (result []response.FormatAddressInfo) {
+	var addressList []model.ZMAddress
 	odb := global.GVA_DB.Model(&model.ZMAddress{}).Debug()
 	odb = odb.Where("is_deleted = 0 and parent_id > 0").Order("sort desc").Order("id asc")
 	odb.Find(&addressList)
 
-	return addressList
+	var temp response.FormatAddressInfo
+	for idx, _ := range addressList {
+		temp.CityId = addressList[idx].Id
+		temp.CityName = addressList[idx].Name
+		result = append(result, temp)
+	}
+
+	return result
 }
 
 //ApiGetCheckLogin 根据openId获取用户是否登录
@@ -297,7 +305,7 @@ func (ins *IndexService) ApiGetTaskList(page, tType, addressId int) (taskLists [
 
 		temp.Date = utils.GetUnixTimeToDateTime1(taskList[idx].AddTime)
 		temp.Address = ""
-		for aIdx,_:= range addressList {
+		for aIdx, _ := range addressList {
 			if addressList[aIdx].Id == taskList[idx].AddressId {
 				temp.Address = addressList[aIdx].Name
 			}
