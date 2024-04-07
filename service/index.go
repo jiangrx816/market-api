@@ -256,6 +256,12 @@ func (ins *IndexService) ApiGetTaskList(page, tType, addressId int) (taskLists [
 	odbUser := global.GVA_DB.Model(&model.ZMUser{}).Debug()
 	odb = odbUser.Where("user_id in(?)", userIdsResult).Find(&memberList)
 
+	//获取所有的地址
+	//查询父级ID
+	var addressList []model.ZMAddress
+	global.GVA_DB.Model(&model.ZMAddress{}).Debug().Where("is_deleted = 0 and parent_id > 0").Find(&addressList)
+
+	badWordList := ins.getBadWordsList()
 	var temp response.FormatTaskData
 	for idx, _ := range taskList {
 		temp.Id = taskList[idx].Id
@@ -268,7 +274,7 @@ func (ins *IndexService) ApiGetTaskList(page, tType, addressId int) (taskLists [
 		}
 
 		//过滤敏感数据并清除手机号
-		tempDesc := utils.ClearMobileText(utils.RegContent(taskList[idx].Desc, ins.getBadWordsList()))
+		tempDesc := utils.ClearMobileText(utils.RegContent(taskList[idx].Desc, badWordList))
 		temp.Desc = utils.TruncateString(tempDesc, 60) + "......"
 
 		temp.Mobile = ""
@@ -281,7 +287,12 @@ func (ins *IndexService) ApiGetTaskList(page, tType, addressId int) (taskLists [
 		}
 
 		temp.Date = utils.GetUnixTimeToDateTime1(taskList[idx].AddTime)
-		temp.Address = taskList[idx].Address
+		temp.Address = ""
+		for aIdx,_:= range addressList {
+			if addressList[aIdx].Id == taskList[idx].AddressId {
+				temp.Address = addressList[aIdx].Name
+			}
+		}
 		temp.Status = taskList[idx].Status
 
 		taskLists = append(taskLists, temp)

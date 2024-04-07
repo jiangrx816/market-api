@@ -37,13 +37,13 @@ func ClearMobileText(text string) (cleanedText string) {
 	matches := phoneRegex.FindAllString(text, -1)
 
 	if matches != nil {
-		fmt.Println("找到的手机号：", matches)
+		//fmt.Println("找到的手机号：", matches)
 		// 将手机号去除
 		cleanedText = phoneRegex.ReplaceAllString(text, "[手机号敏感数据不予显示]")
-		fmt.Println("去除手机号后的文本：", cleanedText)
+		//fmt.Println("去除手机号后的文本：", cleanedText)
 	} else {
 		cleanedText = text
-		fmt.Println("未找到手机号")
+		//fmt.Println("未找到手机号")
 	}
 
 	return
@@ -74,7 +74,7 @@ func RegContent(matchContent string, sensitiveWords []string) string {
 	// 构造正则匹配字符
 	regStr := strings.Join(sensitiveWords, "|")
 	wordReg := regexp.MustCompile(regStr)
-	println("regStr -> ", regStr)
+	//println("regStr -> ", regStr)
 
 	textBytes := wordReg.ReplaceAllFunc([]byte(matchContent), func(bytes []byte) []byte {
 		banWords = append(banWords, string(bytes))
@@ -85,9 +85,9 @@ func RegContent(matchContent string, sensitiveWords []string) string {
 		}
 		return replaceBytes
 	})
-	fmt.Println("srcText        -> ", matchContent)
-	fmt.Println("replaceText    -> ", string(textBytes))
-	fmt.Println("sensitiveWords -> ", banWords)
+	//fmt.Println("srcText        -> ", matchContent)
+	//fmt.Println("replaceText    -> ", string(textBytes))
+	//fmt.Println("sensitiveWords -> ", banWords)
 	return string(textBytes)
 }
 
