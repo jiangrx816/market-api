@@ -39,3 +39,12 @@ type FormatTaskData struct {
 	Status  int    `json:"status"`
 	IsBest  int    `json:"is_best"`
 }
+
+//返回地址的结构体
+type FormatAddressData struct {
+	Id        int                  `json:"id"`
+	Name      string               `json:"name"`
+	Sort      int                  `json:"sort"`
+	ParentId  int                  `json:"-"`
+	ChildList []*FormatAddressData `json:"list"`
+}

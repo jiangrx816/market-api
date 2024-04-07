@@ -17,9 +17,19 @@ type IndexService struct {
 
 //ApiGetAddressList 获取城市列表信息
 func (ins *IndexService) ApiGetAddressList() (addressList []model.ZMAddress) {
+	//查询父级ID
+	var addressParentList []model.ZMAddress
 	odb := global.GVA_DB.Model(&model.ZMAddress{}).Debug()
-	odb = odb.Where("is_deleted = 0").Order("sort desc").Order("id asc")
-	odb.Find(&addressList)
+	odb = odb.Where("is_deleted = 0 and parent_id = 0").Order("sort desc").Order("id asc")
+	odb.Find(&addressParentList)
+
+	for idx, _ := range addressParentList {
+		var addressChildList []*model.ZMAddress
+		global.GVA_DB.Model(&model.ZMAddress{}).Debug().Where("is_deleted = 0 and parent_id = ?", addressParentList[idx].Id).Order("sort desc").Order("id asc").Find(&addressChildList)
+		addressParentList[idx].ChildList = addressChildList
+	}
+
+	addressList = addressParentList
 	return addressList
 }
 
@@ -61,7 +71,7 @@ func (ins *IndexService) ApiGetBannerListNew(tType int) (bannerList []string) {
 	bookDB.Find(&banners)
 
 	for idx, _ := range banners {
-		bannerList = append(bannerList,banners[idx].Image)
+		bannerList = append(bannerList, banners[idx].Image)
 	}
 
 	return bannerList

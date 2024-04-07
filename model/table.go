@@ -2,9 +2,11 @@ package model
 
 // ZMAddress
 type ZMAddress struct {
-	Id   int    `json:"id"`
-	Name string `json:"name"`
-	Sort int    `json:"sort"`
+	Id        int          `json:"id"`
+	Name      string       `json:"name"`
+	Sort      int          `json:"sort"`
+	ParentId  int          `json:"parent_id"`
+	ChildList []*ZMAddress `json:"list"`
 }
 
 // TableName ZMAddress 表名
