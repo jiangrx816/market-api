@@ -91,6 +91,7 @@ type ZMTask struct {
 	Status    int    `json:"status"`
 	AddTime   int64  `json:"add_time"`
 	Address   string `json:"address"`
+	Mobile    string `json:"mobile"`
 	AddressId int    `json:"address_id"`
 	CreatedAt string `json:"created_at" gorm:"-"`
 }

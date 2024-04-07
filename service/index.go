@@ -302,7 +302,12 @@ func (ins *IndexService) ApiGetTaskList(page, tType, addressId int) (taskLists [
 				temp.IsBest = memberList[dIndex].IsBest
 			}
 		}
-
+		
+		//判断是否后台填入
+		if taskList[idx].Mobile != "" {
+			temp.Mobile = taskList[idx].Mobile
+		}
+		
 		temp.Date = utils.GetUnixTimeToDateTime1(taskList[idx].AddTime)
 		temp.Address = ""
 		for aIdx, _ := range addressList {
