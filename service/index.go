@@ -19,7 +19,7 @@ type IndexService struct {
 func (ins *IndexService) ApiGetAddressHot() (addressList []model.ZMAddress) {
 	//查询父级ID
 	odb := global.GVA_DB.Model(&model.ZMAddress{}).Debug()
-	odb = odb.Where("is_deleted = 0 and is_host = 1 and parent_id > 0").Order("sort desc").Order("id asc")
+	odb = odb.Where("is_deleted = 0 and is_hot = 1 and parent_id > 0").Order("sort desc").Order("id asc")
 	odb.Find(&addressList)
 
 	return addressList

@@ -6,6 +6,7 @@ type ZMAddress struct {
 	Name      string       `json:"name"`
 	Sort      int          `json:"sort"`
 	ParentId  int          `json:"parent_id"`
+	IsHot     int          `json:"is_hot"`
 	ChildList []*ZMAddress `json:"list"`
 }
 
