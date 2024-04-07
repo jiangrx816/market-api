@@ -24,10 +24,11 @@ type MakeUserData struct {
 }
 
 type MemberUpdateData struct {
-	UserId   int    `json:"user_id"`
-	NickName string `json:"nick_name"`
-	HeadUrl  string `json:"head_url"`
-	Mobile   string `json:"mobile"`
+	UserId    int    `json:"user_id"`
+	AddressId int    `json:"address_id"`
+	NickName  string `json:"nick_name"`
+	HeadUrl   string `json:"head_url"`
+	Mobile    string `json:"mobile"`
 }
 
 type MakePhotoData struct {
