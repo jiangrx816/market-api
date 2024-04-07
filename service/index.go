@@ -385,7 +385,11 @@ func (ins *IndexService) ApiGetTaskInfo(taskId int) (taskInfo response.FormatTas
 	taskInfo.Desc = utils.ClearMobileText(utils.RegContent(task.Desc, ins.getBadWordsList()))
 	taskInfo.Mobile = user.Mobile
 	taskInfo.Date = utils.GetUnixTimeToDateTime(task.AddTime)
-	taskInfo.Address = task.Address
+
+	var addressInfo model.ZMAddress
+	global.GVA_DB.Model(&model.ZMAddress{}).Debug().Where("id = ?", task.AddressId).First(&addressInfo)
+
+	taskInfo.Address = addressInfo.Name
 	taskInfo.Status = task.Status
 
 	return
