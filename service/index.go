@@ -341,6 +341,11 @@ func (ins *IndexService) ApiGetMyTaskList(page, userId int) (taskLists []respons
 	odbUser := global.GVA_DB.Model(&model.ZMUser{}).Debug()
 	odb = odbUser.Where("user_id in(?)", userIds).Find(&memberList)
 
+	//查询父级ID
+	var addressList []model.ZMAddress
+	global.GVA_DB.Model(&model.ZMAddress{}).Debug().Where("is_deleted = 0 and parent_id > 0").Find(&addressList)
+
+
 	var temp response.FormatTaskData
 	for idx, _ := range taskList {
 		temp.Id = taskList[idx].Id
@@ -359,7 +364,13 @@ func (ins *IndexService) ApiGetMyTaskList(page, userId int) (taskLists []respons
 		}
 
 		temp.Date = utils.GetUnixTimeToDateTime1(taskList[idx].AddTime)
-		temp.Address = utils.TruncateString(taskList[idx].Address, 5)
+		
+		temp.Address = ""
+		for aIdx, _ := range addressList {
+			if addressList[aIdx].Id == taskList[idx].AddressId {
+				temp.Address = addressList[aIdx].Name
+			}
+		}
 		temp.Status = taskList[idx].Status
 		taskLists = append(taskLists, temp)
 	}
