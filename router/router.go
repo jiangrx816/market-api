@@ -16,6 +16,7 @@ func InitRouter() *gin.Engine {
 		//获取地址列表
 		api.GET("/getAddressHot", app.ApiGetAddressHot)
 		api.GET("/getAddressList", app.ApiGetAddressList)
+		api.GET("/getAddressChild", app.ApiGetAddressChildList)
 		//根据openId获取用户是否登录
 		api.GET("/getCheckLogin", app.ApiGetCheckLogin)
 		//根据userId获取用户附属信息

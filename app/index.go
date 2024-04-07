@@ -34,6 +34,15 @@ func ApiGetAddressList(c *gin.Context) {
 	}, global.SUCCESS_MSG, c)
 }
 
+//ApiGetAddressChildList 获取城市列表
+func ApiGetAddressChildList(c *gin.Context) {
+	var service service.IndexService
+	list := service.ApiGetAddressChildList()
+	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
+		"list": list,
+	}, global.SUCCESS_MSG, c)
+}
+
 //ApiGetCheckLogin 根据openId获取用户是否登录
 func ApiGetCheckLogin(c *gin.Context) {
 	openId := c.Query("open_id")

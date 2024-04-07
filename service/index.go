@@ -43,6 +43,15 @@ func (ins *IndexService) ApiGetAddressList() (addressList []model.ZMAddress) {
 	return addressList
 }
 
+//ApiGetAddressChildList 获取城市列表信息
+func (ins *IndexService) ApiGetAddressChildList() (addressList []model.ZMAddress) {
+	odb := global.GVA_DB.Model(&model.ZMAddress{}).Debug()
+	odb = odb.Where("is_deleted = 0 and parent_id > 0").Order("sort desc").Order("id asc")
+	odb.Find(&addressList)
+
+	return addressList
+}
+
 //ApiGetCheckLogin 根据openId获取用户是否登录
 func (ins *IndexService) ApiGetCheckLogin(openId string) (userInfo model.ZMUser) {
 	db := global.GVA_DB.Model(&model.ZMUser{}).Debug()
