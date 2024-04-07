@@ -8,11 +8,11 @@ type UpdateTaskStatus struct {
 }
 
 type MakeTaskData struct {
-	TaskDesc string `json:"task_desc"`
-	TagId    int    `json:"tag_id"`
-	UserId   int64  `json:"user_id"`
-	Address  string `json:"address"`
-	Title    string `json:"title"`
+	TaskDesc  string `json:"task_desc"`
+	TagId     int    `json:"tag_id"`
+	UserId    int64  `json:"user_id"`
+	AddressId int    `json:"address_id"`
+	Title     string `json:"title"`
 }
 
 type MakeUserData struct {

@@ -430,7 +430,7 @@ func (ins *IndexService) getBadWordsList() (badWordsSlice []string) {
 
 //ApiDoMakeTaskData 发布任务
 func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (result bool) {
-	if taskData.Title == "" || taskData.TaskDesc == "" || taskData.Address == "" || taskData.TagId == 0 || taskData.UserId == 0 {
+	if taskData.Title == "" || taskData.TaskDesc == "" || taskData.AddressId == 0 || taskData.TagId == 0 || taskData.UserId == 0 {
 		return
 	}
 
@@ -449,7 +449,7 @@ func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (resul
 	task.UserId = taskData.UserId
 	task.Title = taskData.Title
 	task.Desc = taskData.TaskDesc
-	task.Address = taskData.Address
+	task.AddressId = taskData.AddressId
 	task.Status = 1
 	task.AddTime = utils.GetCurrentUnixTimestamp()
 	affected := odb.Create(&task).RowsAffected
