@@ -95,7 +95,7 @@ func (ws *WechatService) ApiCreateWxPay(payData request.WXPayData) (JSPayParam r
 //ApiGetWxPay 创建订单
 func (ws *WechatService) ApiGetWxOpenPay(openData request.OpenGoodPay) (JSPayParam request.JSPayParam) {
 	//验证数据
-	if openData.UserID < 0 || openData.PayId <= 0 || openData.OpenID == "" || openData.UserImage == "" || openData.UserArea == "" || openData.NickName == "" || openData.UserSelf == "" || openData.TagID <= 0 || openData.IsAgree <= 0 {
+	if openData.UserID < 0 || openData.PayId <= 0 || openData.OpenID == "" || openData.UserImage == "" || openData.AddressId <= 0 || openData.NickName == "" || openData.UserSelf == "" || openData.TagID <= 0 || openData.IsAgree <= 0 {
 		return
 	}
 	//开通优选工匠的前置业务处理
@@ -136,7 +136,8 @@ func (ws *WechatService) OpenPayPreCreatData(openData request.OpenGoodPay) (resu
 		global.GVA_DB.Model(&model.ZMUserExt{}).Debug().Where("user_id=?", openData.UserID).First(&userExtInfo)
 		var userExtCreateData model.ZMUserExt
 		userExtCreateData.UserId = int64(openData.UserID)
-		userExtCreateData.Address = openData.UserArea
+		userExtCreateData.Address = openData.Address
+		userExtCreateData.AddressId = openData.AddressId
 		tempDesc := help.ClearMobileText(openData.UserSelf)
 		userExtCreateData.Desc = tempDesc
 		if len(openData.UserCase) > 0 {
@@ -456,7 +457,7 @@ func (ws *WechatService) dealRefundsAfterData(orderInfo *model.ZMOrder) {
 		//判断会员是否过期
 		today := help.GetCurrentDateYMD()
 		todayInt, _ := strconv.Atoi(today)
-		fmt.Printf("%#v \n",todayInt)
+		fmt.Printf("%#v \n", todayInt)
 		if todayInt > userTemp.MemberLimit {
 			user.IsMember = 0    //已退费,就不是会员了
 			user.MemberLimit = 0 //已退费,就不是会员了
@@ -469,8 +470,8 @@ func (ws *WechatService) dealRefundsAfterData(orderInfo *model.ZMOrder) {
 			//当前的有效期减去时间,就是剩余的会员期限
 			surplus := help.CalculateBeforeDate(userTemp.MemberLimit, totalDay)
 			surplusInt, _ := strconv.Atoi(surplus)
-			fmt.Printf("surplusInt:%#v \n",surplusInt)
-			fmt.Printf("todayInt:%#v \n",todayInt)
+			fmt.Printf("surplusInt:%#v \n", surplusInt)
+			fmt.Printf("todayInt:%#v \n", todayInt)
 			//如果剩余的有效期，小于今天，则证明，会员到期
 			if surplusInt <= todayInt {
 				user.IsMember = 0    //已退费,就不是会员了

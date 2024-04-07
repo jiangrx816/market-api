@@ -86,7 +86,8 @@ type OpenGoodPay struct {
 	UserID    int      `json:"user_id"`
 	OpenID    string   `json:"open_id"`
 	UserImage string   `json:"user_image"`
-	UserArea  string   `json:"user_area"`
+	Address   string   `json:"address"`
+	AddressId int      `json:"address_id"`
 	NickName  string   `json:"nick_name"`
 	UserSelf  string   `json:"user_self"`
 	TagID     int      `json:"tag_id"`
