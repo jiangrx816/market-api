@@ -133,6 +133,7 @@ type ZMUserExt struct {
 	Desc      string `json:"desc"`
 	Demo      string `json:"demo"`
 	IsAgree   int    `json:"is_agree"`
+	AddressId int    `json:"address_id"`
 	ViewCount int    `json:"view_count"`
 	LastTime  int64  `json:"last_time"`
 }

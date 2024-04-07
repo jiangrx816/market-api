@@ -242,6 +242,12 @@ func (ins *IndexService) ApiGetMemberInfo(userId int) (userInfo response.MemberD
 	userInfo.Demo = userExt.Demo
 	userInfo.ViewCount = userExt.ViewCount
 
+	//查询城市详情
+	var addressInfo model.ZMAddress
+	global.GVA_DB.Model(&model.ZMAddress{}).Debug().Where("id = ?", userExt.AddressId).First(&addressInfo)
+
+	userInfo.Address = addressInfo.Name
+
 	return
 }
 
@@ -302,12 +308,12 @@ func (ins *IndexService) ApiGetTaskList(page, tType, addressId int) (taskLists [
 				temp.IsBest = memberList[dIndex].IsBest
 			}
 		}
-		
+
 		//判断是否后台填入
 		if taskList[idx].Mobile != "" {
 			temp.Mobile = taskList[idx].Mobile
 		}
-		
+
 		temp.Date = utils.GetUnixTimeToDateTime1(taskList[idx].AddTime)
 		temp.Address = ""
 		for aIdx, _ := range addressList {
@@ -350,7 +356,6 @@ func (ins *IndexService) ApiGetMyTaskList(page, userId int) (taskLists []respons
 	var addressList []model.ZMAddress
 	global.GVA_DB.Model(&model.ZMAddress{}).Debug().Where("is_deleted = 0 and parent_id > 0").Find(&addressList)
 
-
 	var temp response.FormatTaskData
 	for idx, _ := range taskList {
 		temp.Id = taskList[idx].Id
@@ -369,7 +374,7 @@ func (ins *IndexService) ApiGetMyTaskList(page, userId int) (taskLists []respons
 		}
 
 		temp.Date = utils.GetUnixTimeToDateTime1(taskList[idx].AddTime)
-		
+
 		temp.Address = ""
 		for aIdx, _ := range addressList {
 			if addressList[aIdx].Id == taskList[idx].AddressId {

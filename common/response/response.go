@@ -25,6 +25,7 @@ type MemberData struct {
 	MemberLimit int    `json:"member_limit"`
 	ViewCount   int    `json:"view_count"`
 	Demo        string `json:"demo"`
+	Address     string `json:"address"`
 }
 
 type FormatTaskData struct {
