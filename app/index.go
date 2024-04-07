@@ -16,6 +16,15 @@ import (
 )
 
 
+//ApiGetAddressHot 获取热门城市列表
+func ApiGetAddressHot(c *gin.Context) {
+	var service service.IndexService
+	list := service.ApiGetAddressHot()
+	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
+		"list": list,
+	}, global.SUCCESS_MSG, c)
+}
+
 //ApiGetAddressList 获取城市列表
 func ApiGetAddressList(c *gin.Context) {
 	var service service.IndexService
