@@ -507,13 +507,14 @@ func (ins *IndexService) ApiDoMakeTaskOtherData(taskData request.MakeTaskOtherDa
 	task.Title = "代发任务"
 	task.Desc = taskData.TaskDesc
 	task.AddressId = taskData.AddressId
+	task.Mobile = taskData.Mobile
 	task.Status = 1
 	task.AddTime = utils.GetCurrentUnixTimestamp()
 	affected := odb.Create(&task).RowsAffected
 	if affected > 0 {
 		result = true
 		//单独的防止连续点击
-		global.GVA_REDIS.SetNX(context.Background(), "userPushTask_lock", 1, time.Duration(3)*time.Second)
+		global.GVA_REDIS.SetNX(context.Background(), "userPushTask_lock", 1, time.Duration(5)*time.Second)
 	}
 	return
 }
