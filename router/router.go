@@ -49,6 +49,8 @@ func InitRouter() *gin.Engine {
 		api.GET("/getTaskInfo", app.ApiGetTaskInfo)
 		//发布任务
 		api.POST("/doMakeTaskData", app.ApiDoMakeTaskData)
+		//代发任务
+		api.POST("/other/doMakeTaskData", app.ApiDoMakeOtherTaskData)
 		//校验是否可发布
 		api.GET("/checkPushTask", app.ApiCheckPushTask)
 		//创建用户

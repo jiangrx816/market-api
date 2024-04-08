@@ -490,6 +490,34 @@ func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (resul
 	return
 }
 
+//ApiDoMakeTaskData 发布任务
+func (ins *IndexService) ApiDoMakeTaskOtherData(taskData request.MakeTaskOtherData) (result bool) {
+	if taskData.Mobile == "" || taskData.TaskDesc == "" || taskData.AddressId == 0 || taskData.TagId == 0 {
+		return
+	}
+	s, _ := global.GVA_REDIS.Get(context.Background(), "userPushTask_lock").Result()
+	atoInt, _ := strconv.Atoi(s)
+	if atoInt > 1 {
+		return
+	}
+	var task model.ZMTask
+	odb := global.GVA_DB.Model(&model.ZMTask{}).Debug()
+	task.TagId = taskData.TagId
+	task.UserId = 1712141769
+	task.Title = "代发任务"
+	task.Desc = taskData.TaskDesc
+	task.AddressId = taskData.AddressId
+	task.Status = 1
+	task.AddTime = utils.GetCurrentUnixTimestamp()
+	affected := odb.Create(&task).RowsAffected
+	if affected > 0 {
+		result = true
+		//单独的防止连续点击
+		global.GVA_REDIS.SetNX(context.Background(), "userPushTask_lock", 1, time.Duration(3)*time.Second)
+	}
+	return
+}
+
 //ApiUpdateTaskStatus 更新任务状态
 func (ins *IndexService) ApiUpdateTaskStatus(taskData request.UpdateTaskStatus) (result bool) {
 	if taskData.TaskId < 0 {

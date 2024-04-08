@@ -15,6 +15,13 @@ type MakeTaskData struct {
 	Title     string `json:"title"`
 }
 
+type MakeTaskOtherData struct {
+	TaskDesc  string `json:"task_desc"`
+	TagId     int    `json:"tag_id"`
+	AddressId int    `json:"address_id"`
+	Mobile    string `json:"mobile"`
+}
+
 type MakeUserData struct {
 	Mobile   string `json:"mobile"`
 	OpenId   string `json:"open_id"`

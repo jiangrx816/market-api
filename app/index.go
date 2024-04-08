@@ -15,7 +15,6 @@ import (
 	"time"
 )
 
-
 //ApiGetAddressHot 获取热门城市列表
 func ApiGetAddressHot(c *gin.Context) {
 	var service service.IndexService
@@ -188,6 +187,20 @@ func ApiDoMakeTaskData(c *gin.Context) {
 
 	log.Println(json)
 	res := service.ApiDoMakeTaskData(json)
+	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
+		"result": res,
+	}, global.SUCCESS_MSG, c)
+}
+
+//ApiDoMakeOtherTaskData 代发任务
+func ApiDoMakeOtherTaskData(c *gin.Context) {
+	var json request.MakeTaskOtherData
+	if err := c.ShouldBindJSON(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	var service service.IndexService
+	res := service.ApiDoMakeTaskOtherData(json)
 	common.ReturnResponse(global.SUCCESS, map[string]interface{}{
 		"result": res,
 	}, global.SUCCESS_MSG, c)
