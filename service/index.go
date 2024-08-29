@@ -1,21 +1,19 @@
 package service
 
 import (
-	"context"
 	"fmt"
 	"market/common/request"
 	"market/common/response"
 	"market/model"
 	"market/utils"
 	"strconv"
-	"time"
 )
 import "market/global"
 
 type IndexService struct {
 }
 
-//ApiGetAddressHot 获取热门城市列表信息
+// ApiGetAddressHot 获取热门城市列表信息
 func (ins *IndexService) ApiGetAddressHot() (addressList []model.ZMAddress) {
 	//查询父级ID
 	odb := global.GVA_DB.Model(&model.ZMAddress{}).Debug()
@@ -25,7 +23,7 @@ func (ins *IndexService) ApiGetAddressHot() (addressList []model.ZMAddress) {
 	return addressList
 }
 
-//ApiGetAddressList 获取城市列表信息
+// ApiGetAddressList 获取城市列表信息
 func (ins *IndexService) ApiGetAddressList() (addressList []model.ZMAddress) {
 	//查询父级ID
 	var addressParentList []model.ZMAddress
@@ -43,7 +41,7 @@ func (ins *IndexService) ApiGetAddressList() (addressList []model.ZMAddress) {
 	return addressList
 }
 
-//ApiGetAddressChildList 获取城市列表信息
+// ApiGetAddressChildList 获取城市列表信息
 func (ins *IndexService) ApiGetAddressChildList() (result []response.FormatAddressInfo) {
 	var addressList []model.ZMAddress
 	odb := global.GVA_DB.Model(&model.ZMAddress{}).Debug()
@@ -60,7 +58,7 @@ func (ins *IndexService) ApiGetAddressChildList() (result []response.FormatAddre
 	return result
 }
 
-//ApiGetCheckLogin 根据openId获取用户是否登录
+// ApiGetCheckLogin 根据openId获取用户是否登录
 func (ins *IndexService) ApiGetCheckLogin(openId string) (userInfo model.ZMUser) {
 	db := global.GVA_DB.Model(&model.ZMUser{}).Debug()
 	db = db.Where("status=1 AND open_id = ?", openId).First(&userInfo)
@@ -75,14 +73,14 @@ func (ins *IndexService) ApiGetCheckLogin(openId string) (userInfo model.ZMUser)
 	return
 }
 
-//ApiGetUserExtInfo 根据userId获取用户附属信息
+// ApiGetUserExtInfo 根据userId获取用户附属信息
 func (ins *IndexService) ApiGetUserExtInfo(userId int) (userInfo model.ZMUserExt) {
 	db := global.GVA_DB.Model(&model.ZMUserExt{}).Debug()
 	db = db.Where("user_id = ?", userId).First(&userInfo)
 	return
 }
 
-//ApiGetBannerList 获取Banner的列表信息
+// ApiGetBannerList 获取Banner的列表信息
 func (ins *IndexService) ApiGetBannerList(tType int) (bannerList []model.ZMBanner) {
 	bookDB := global.GVA_DB.Model(&model.ZMBanner{}).Debug()
 	bookDB = bookDB.Where("is_deleted = 0 and status=1 and type = ?", tType).Order("id asc").Limit(4)
@@ -90,7 +88,7 @@ func (ins *IndexService) ApiGetBannerList(tType int) (bannerList []model.ZMBanne
 	return bannerList
 }
 
-//ApiGetBannerList 获取Banner的列表信息
+// ApiGetBannerList 获取Banner的列表信息
 func (ins *IndexService) ApiGetBannerListNew(tType int) (bannerList []string) {
 	var banners []model.ZMBanner
 	bookDB := global.GVA_DB.Model(&model.ZMBanner{}).Debug()
@@ -104,7 +102,7 @@ func (ins *IndexService) ApiGetBannerListNew(tType int) (bannerList []string) {
 	return bannerList
 }
 
-//ApiGetTagList 获取工种的列表信息
+// ApiGetTagList 获取工种的列表信息
 func (ins *IndexService) ApiGetTagList() (tagList []model.ZMTags) {
 	odb := global.GVA_DB.Model(&model.ZMTags{}).Debug()
 	odb = odb.Where("is_deleted = 0 and status=1").Order("sort desc").Order("id asc").Limit(20)
@@ -112,7 +110,7 @@ func (ins *IndexService) ApiGetTagList() (tagList []model.ZMTags) {
 	return tagList
 }
 
-//ApiGetTagSelect 获取工种的列表信息
+// ApiGetTagSelect 获取工种的列表信息
 func (ins *IndexService) ApiGetTagSelect() (tagList []string) {
 	list := ins.ApiGetTagList()
 	tagList = append(tagList, "请选择分类")
@@ -122,7 +120,7 @@ func (ins *IndexService) ApiGetTagSelect() (tagList []string) {
 	return tagList
 }
 
-//ApiGetPayList 获取会员价格的列表信息
+// ApiGetPayList 获取会员价格的列表信息
 func (ins *IndexService) ApiGetPayList() (payListData []response.FormatData) {
 	var payList []model.ZMPay
 	odb := global.GVA_DB.Model(&model.ZMPay{}).Debug()
@@ -145,7 +143,7 @@ func (ins *IndexService) ApiGetPayList() (payListData []response.FormatData) {
 	return payListData
 }
 
-//ApiGetGoodPay 获取优选工匠的价格
+// ApiGetGoodPay 获取优选工匠的价格
 func (ins *IndexService) ApiGetGoodPay() (info model.ZMPay) {
 	var payList []model.ZMPay
 	odb := global.GVA_DB.Model(&model.ZMPay{}).Debug()
@@ -160,7 +158,7 @@ func (ins *IndexService) ApiGetGoodPay() (info model.ZMPay) {
 	return
 }
 
-//ApiGetGoodMemberList 获取优选工匠列表
+// ApiGetGoodMemberList 获取优选工匠列表
 func (ins *IndexService) ApiGetGoodMemberList(page, tType int) (memberLists []response.MemberData, count int64) {
 	tagDataList := ins.GetTagList()
 	size := global.DEFAULT_PAGE_SIZE
@@ -217,7 +215,7 @@ func (ins *IndexService) ApiGetGoodMemberList(page, tType int) (memberLists []re
 	return
 }
 
-//ApiGetMemberInfo 获取会员详情
+// ApiGetMemberInfo 获取会员详情
 func (ins *IndexService) ApiGetMemberInfo(userId int) (userInfo response.MemberData) {
 	var user model.ZMUser
 	odb := global.GVA_DB.Model(&model.ZMUser{}).Debug()
@@ -251,7 +249,7 @@ func (ins *IndexService) ApiGetMemberInfo(userId int) (userInfo response.MemberD
 	return
 }
 
-//ApiGetTaskList 获取任务列表
+// ApiGetTaskList 获取任务列表
 func (ins *IndexService) ApiGetTaskList(page, tType, addressId int) (taskLists []response.FormatTaskData, count int64) {
 	tagDataList := ins.GetTagList()
 	size := global.DEFAULT_PAGE_SIZE
@@ -329,7 +327,7 @@ func (ins *IndexService) ApiGetTaskList(page, tType, addressId int) (taskLists [
 	return
 }
 
-//ApiGetMyTaskList 获取已发布的任务列表
+// ApiGetMyTaskList 获取已发布的任务列表
 func (ins *IndexService) ApiGetMyTaskList(page, userId int) (taskLists []response.FormatTaskData, count int64) {
 	tagDataList := ins.GetTagList()
 	size := global.DEFAULT_PAGE_SIZE
@@ -388,7 +386,7 @@ func (ins *IndexService) ApiGetMyTaskList(page, userId int) (taskLists []respons
 	return
 }
 
-//ApiGetTaskInfo 获取任务详情
+// ApiGetTaskInfo 获取任务详情
 func (ins *IndexService) ApiGetTaskInfo(taskId int) (taskInfo response.FormatTaskData) {
 	var task model.ZMTask
 	odb := global.GVA_DB.Model(&model.ZMTask{}).Debug()
@@ -416,34 +414,35 @@ func (ins *IndexService) ApiGetTaskInfo(taskId int) (taskInfo response.FormatTas
 	return
 }
 
-//GetTagList 获取所有的工种
+// GetTagList 获取所有的工种
 func (ins *IndexService) GetTagList() (tagList []model.ZMTags) {
 	odb := global.GVA_DB.Model(&model.ZMTags{}).Debug()
 	odb.Find(&tagList)
 	return tagList
 }
 
-//GetTagInfo 获取指定的工种
+// GetTagInfo 获取指定的工种
 func (ins *IndexService) GetTagInfo(tagId int) (tagInfo model.ZMTags) {
 	odb := global.GVA_DB.Model(&model.ZMTags{}).Debug()
 	odb.Where("id=?", tagId).First(&tagInfo)
 	return
 }
 
-//ApiCheckPushTask 校验是否可发布
+// ApiCheckPushTask 校验是否可发布
 func (ins *IndexService) ApiCheckPushTask(userId int) (result bool) {
-	s, _ := global.GVA_REDIS.Get(context.Background(), fmt.Sprintf("userPushTask_%d", userId)).Result()
+	//s, _ := global.GVA_REDIS.Get(context.Background(), fmt.Sprintf("userPushTask_%d", userId)).Result()
+	//
+	//atoi, _ := strconv.Atoi(s)
+	//
+	//if atoi < 1 {
+	//	result = true
+	//}
 
-	atoi, _ := strconv.Atoi(s)
-
-	if atoi < 1 {
-		result = true
-	}
-
+	result = true
 	return
 }
 
-//getBadWordsList 获取过滤的坏词
+// getBadWordsList 获取过滤的坏词
 func (ins *IndexService) getBadWordsList() (badWordsSlice []string) {
 	var badWords []model.ZMBadWords
 	global.GVA_DB.Model(&model.ZMBadWords{}).Debug().Find(&badWords)
@@ -453,20 +452,20 @@ func (ins *IndexService) getBadWordsList() (badWordsSlice []string) {
 	return
 }
 
-//ApiDoMakeTaskData 发布任务
+// ApiDoMakeTaskData 发布任务
 func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (result bool) {
 	if taskData.Title == "" || taskData.TaskDesc == "" || taskData.AddressId == 0 || taskData.TagId == 0 || taskData.UserId == 0 {
 		return
 	}
 
-	//判断用户发的次数，5分钟设置最大3次
-	cacheCount := fmt.Sprintf("request_count:%d", taskData.UserId)
-	count, _ := global.GVA_REDIS.Get(context.Background(), cacheCount).Result()
-	countInt, _ := strconv.Atoi(count)
-	fmt.Printf("countInt的次数：%#v \n", countInt)
-	if countInt >= 3 {
-		return false
-	}
+	////判断用户发的次数，5分钟设置最大3次
+	//cacheCount := fmt.Sprintf("request_count:%d", taskData.UserId)
+	//count, _ := global.GVA_REDIS.Get(context.Background(), cacheCount).Result()
+	//countInt, _ := strconv.Atoi(count)
+	//fmt.Printf("countInt的次数：%#v \n", countInt)
+	//if countInt >= 3 {
+	//	return false
+	//}
 
 	var task model.ZMTask
 	odb := global.GVA_DB.Model(&model.ZMTask{}).Debug()
@@ -480,26 +479,26 @@ func (ins *IndexService) ApiDoMakeTaskData(taskData request.MakeTaskData) (resul
 	affected := odb.Create(&task).RowsAffected
 	if affected > 0 {
 		result = true
-		//键值增加1
-		global.GVA_REDIS.Incr(context.Background(), cacheCount).Result()
-		//设置5分钟的有效期
-		global.GVA_REDIS.Expire(context.Background(), cacheCount, time.Duration(300)*time.Second)
-		//单独的防止连续点击
-		global.GVA_REDIS.SetNX(context.Background(), fmt.Sprintf("userPushTask_%d", task.UserId), 1, time.Duration(3)*time.Second)
+		////键值增加1
+		//global.GVA_REDIS.Incr(context.Background(), cacheCount).Result()
+		////设置5分钟的有效期
+		//global.GVA_REDIS.Expire(context.Background(), cacheCount, time.Duration(300)*time.Second)
+		////单独的防止连续点击
+		//global.GVA_REDIS.SetNX(context.Background(), fmt.Sprintf("userPushTask_%d", task.UserId), 1, time.Duration(3)*time.Second)
 	}
 	return
 }
 
-//ApiDoMakeTaskData 发布任务
+// ApiDoMakeTaskData 发布任务
 func (ins *IndexService) ApiDoMakeTaskOtherData(taskData request.MakeTaskOtherData) (result bool) {
 	if taskData.Mobile == "" || taskData.TaskDesc == "" || taskData.AddressId == 0 || taskData.TagId == 0 {
 		return
 	}
-	s, _ := global.GVA_REDIS.Get(context.Background(), "userPushTask_lock").Result()
-	atoInt, _ := strconv.Atoi(s)
-	if atoInt > 1 {
-		return
-	}
+	//s, _ := global.GVA_REDIS.Get(context.Background(), "userPushTask_lock").Result()
+	//atoInt, _ := strconv.Atoi(s)
+	//if atoInt > 1 {
+	//	return
+	//}
 	var task model.ZMTask
 	odb := global.GVA_DB.Model(&model.ZMTask{}).Debug()
 	task.TagId = taskData.TagId
@@ -514,12 +513,12 @@ func (ins *IndexService) ApiDoMakeTaskOtherData(taskData request.MakeTaskOtherDa
 	if affected > 0 {
 		result = true
 		//单独的防止连续点击
-		global.GVA_REDIS.SetNX(context.Background(), "userPushTask_lock", 1, time.Duration(5)*time.Second)
+		//global.GVA_REDIS.SetNX(context.Background(), "userPushTask_lock", 1, time.Duration(5)*time.Second)
 	}
 	return
 }
 
-//ApiUpdateTaskStatus 更新任务状态
+// ApiUpdateTaskStatus 更新任务状态
 func (ins *IndexService) ApiUpdateTaskStatus(taskData request.UpdateTaskStatus) (result bool) {
 	if taskData.TaskId < 0 {
 		return
@@ -530,7 +529,7 @@ func (ins *IndexService) ApiUpdateTaskStatus(taskData request.UpdateTaskStatus) 
 	return true
 }
 
-//ApiUpdateMemberData 更新用户资料信息
+// ApiUpdateMemberData 更新用户资料信息
 func (ins *IndexService) ApiUpdateMemberData(memberData request.MemberUpdateData) (result bool) {
 	if memberData.UserId <= 0 {
 		return
@@ -554,7 +553,7 @@ func (ins *IndexService) ApiUpdateMemberData(memberData request.MemberUpdateData
 	return true
 }
 
-//ApiDoMakeUserData 创建用户
+// ApiDoMakeUserData 创建用户
 func (ins *IndexService) ApiDoMakeUserData(userData request.MakeUserData) (result bool) {
 	if userData.Type < 0 || userData.Mobile == "" || userData.OpenId == "" {
 		return

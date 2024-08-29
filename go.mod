@@ -8,7 +8,6 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/jinzhu/gorm v1.9.16
-	github.com/robfig/cron v1.2.0
 	github.com/wechatpay-apiv3/wechatpay-go v0.2.18
 	go.uber.org/zap v1.26.0
 	golang.org/x/sync v0.5.0
